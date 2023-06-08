@@ -1,6 +1,5 @@
 "use strict";
 
-const sqlite = require("sqlite3");
 const db = require("./db-access");
 const dayjs = require("dayjs");
 
@@ -39,6 +38,35 @@ exports.getRoleAndNickNameByUsername = (username) => {
   });
 };
 
+exports.getPages = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT * FROM PAGES ";
+    db.all(sql, [], (err, rows) => {
+      if (err) reject(err);
+      if (rows.length === 0) {
+        resolve({ error: "pages not present" });
+      } else {
+        const pagesList = rows.map((page) => {
+          let pageType = "draft";
+          if (page.publicationDate) {
+            let pubDate = dayjs(page.publicationDate, "dd/MM/YYYY");
+            pageType = pubDate.isAfter(dayjs()) ? "scheduled" : "published";
+          }
+          return {
+            id: page.id,
+            title: page.title,
+            author: page.author,
+            creationDate: dayjs(page.creationDate, "dd/MM/YYYY"),
+            publicationDate: page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
+            type: pageType,
+          };
+        });
+        resolve(pagesList);
+      }
+    });
+  });
+};
+
 exports.getPagesByAuthorId = (id) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM PAGES WHERE AUTHOR = ?";
@@ -54,11 +82,11 @@ exports.getPagesByAuthorId = (id) => {
             pageType = pubDate.isAfter(dayjs()) ? "scheduled" : "published";
           }
           return {
-            id: page.ID,
+            id: page.id,
             title: page.title,
             author: page.author,
-            creationDate: page.creationDate,
-            publicationDate: page.publicationDate,
+            creationDate: dayjs(page.creationDate, "dd/MM/YYYY"),
+            publicationDate: page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
             type: pageType,
           };
         });

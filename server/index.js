@@ -91,6 +91,26 @@ function requireAdminRole() {
   };
 }
 
+app.get("/page/all", async (req, res) => {
+  try{
+  const pages = await db_API.getPages();
+  pages.sort((p1, p2) => {
+    if (p1.publicationDate && p2.publicationDate) {
+      return p1.publicationDate.diff(p2.publicationDate);
+    } else if (p1.publicationDate) {
+      return -1;
+    } else if (p2.publicationDate) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  res.status(200).json(pages);
+}catch(err){
+  res.status(500).json({ error: "an error occurred", content: err });
+}
+});
+
 app.use(isLogged);
 
 app.get("/response", (req, res) => {
@@ -102,6 +122,31 @@ app.get("/admin", requireAdminRole(), (req, res) => {
   res.json("you are an admin role");
 });
 
+app.get("/page/author", async (req, res) => {
+  if (req.query.user) {
+    try{
+    const pages = await db_API.getPagesByAuthorId(req.query.user);
+    console.log(pages);
+    pages.sort((p1, p2) => {
+      if (p1.publicationDate && p2.publicationDate) {
+        return p1.publicationDate.diff(p2.publicationDate);
+      } else if (p1.publicationDate) {
+        return -1;
+      } else if (p2.publicationDate) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    res.status(200).json(pages);
+  }catch(err){
+    res.status(500).json({ error: "an error occurred", content: err });
+  }
+  } else {
+    res.status(422).json({ error: "the user field is not present" });
+  }
+});
+
 app.post(
   "/page/",
   [
@@ -109,7 +154,7 @@ app.post(
     check("author").isLength({ min: 5, max: 15 }),
     check("contents[0].content").isLength({ min: 5 }),
     check("contents[0].position").isNumeric(),
-    check("contents.length").isInt({min: 2})
+    check("contents.length").isInt({ min: 2 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -145,7 +190,7 @@ app.post(
         contentTypeIsValid = false;
         return;
       }
-      if(block.type == "header"){
+      if (block.type == "header") {
         headerPresent = true;
       }
     });
@@ -182,7 +227,7 @@ app.put(
     check("author").isLength({ min: 5, max: 15 }),
     check("contents[0].content").isLength({ min: 5 }),
     check("contents[0].position").isNumeric(),
-    check("contents.length").isInt({min: 2})
+    check("contents.length").isInt({ min: 2 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -218,7 +263,7 @@ app.put(
         contentTypeIsValid = false;
         return;
       }
-      if(block.type == "header"){
+      if (block.type == "header") {
         headerPresent = true;
       }
     });
@@ -236,14 +281,14 @@ app.put(
       publicationDate: req.body.publicationDate,
     };
     try {
-      if(req.user.role == 'admin'){
-        console.log("admin role")
+      if (req.user.role == "admin") {
+        console.log("admin role");
         await db_API.updatePageAdminMode(page);
-      }else{
-        console.log("user role")
-        await db_API.updatePage(page)
+      } else {
+        console.log("user role");
+        await db_API.updatePage(page);
       }
-      
+
       await db_API.deleteBlocks(page.id);
       await db_API.addBlocks(page.id, req.body.contents);
       res
@@ -255,19 +300,19 @@ app.put(
   }
 );
 
-app.delete("/page/:id", [check("id").isNumeric()], async (req, res) =>{
+app.delete("/page/:id", [check("id").isNumeric()], async (req, res) => {
   const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
-    }
-  try{
+  if (!errors.isEmpty()) {
+    return res.status(422).json(errors);
+  }
+  try {
     await db_API.deletePage(req.params.id);
     await db_API.deleteBlocks(req.params.id);
-    res.status(200).json({msg: "page correctly eliminated"})
-  }catch(err){
-    res.status(500).json({error: "the db is not available"})
+    res.status(200).json({ msg: "page correctly eliminated" });
+  } catch (err) {
+    res.status(500).json({ error: "the db is not available" });
   }
-})
+});
 
 app.get("/logout", (req, res) => {
   req.logout(() => {
@@ -278,4 +323,3 @@ app.get("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}/`);
 });
-
