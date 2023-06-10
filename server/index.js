@@ -25,7 +25,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(cors());
 
 passport.use(
   new LocalStrategy(function verify(username, password, cb) {
@@ -35,7 +34,7 @@ passport.use(
       }
 
       crypto.scrypt(password, user.salt, 32, (err, hashedPwd) => {
-        if (err) rejec(err);
+        if (err) reject(err);
         if (
           !crypto.timingSafeEqual(Buffer.from(user.password, "hex"), hashedPwd)
         ) {
@@ -68,21 +67,28 @@ app.use(passport.authenticate("session"));
 
 app.post("/login", passport.authenticate("local"), (req, res) => {
   db_API.getRoleAndNickNameByUsername(req.body.username).then((userData) => {
-    res.json(userData);
+    res.json({username: req.body.username, ...userData});
   });
 });
+
+app.get('/session', (req, res) =>{
+  if(req.isAuthenticated()){
+    res.status(200).json(req.user);
+  } else{
+    res.status(401).json({error: "user not authenitcated"})
+  }
+})
 
 const isLogged = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(500).send("NOT AUTHENTICATED - GO AWAY");
+    res.status(401).send("NOT AUTHENTICATED - GO AWAY");
   }
 };
 
 function requireAdminRole() {
   return (req, res, next) => {
-    console.log(req.user);
     if (req.isAuthenticated() && req.user.role === "admin") {
       next();
     } else {
@@ -94,7 +100,12 @@ function requireAdminRole() {
 app.get("/page/all", async (req, res) => {
   try{
   const pages = await db_API.getPages();
-  pages.sort((p1, p2) => {
+  const pagesWithBlock = await Promise.all(pages.map(async page => {
+    const block = await db_API.getBlockByPagesId(page.id);
+    page.contents = block;
+    return page;
+  }))
+  pagesWithBlock.sort((p1, p2) => {
     if (p1.publicationDate && p2.publicationDate) {
       return p1.publicationDate.diff(p2.publicationDate);
     } else if (p1.publicationDate) {
@@ -105,16 +116,27 @@ app.get("/page/all", async (req, res) => {
       return 0;
     }
   });
-  res.status(200).json(pages);
+  res.status(200).json(pagesWithBlock);
 }catch(err){
   res.status(500).json({ error: "an error occurred", content: err });
 }
 });
 
+app.get("/site-name", (req, res) => {
+  db_API.getWebSiteName()
+  .then(name => res.status(200).json(name))
+  .catch(err => res.status(500).json({error: "Cannot connect to db"}));
+});
+
 app.use(isLogged);
 
+app.get("/users", (req, res) => {
+  db_API.getUsers()
+  .then(users => {console.log(users); res.status(200).json(users)})
+  .catch(err => res.status(500).json({error: "errror in retrieving the users"}))
+})
+
 app.get("/response", (req, res) => {
-  console.log(req.user);
   res.json("hello, you are authenitcated");
 });
 
@@ -314,7 +336,7 @@ app.delete("/page/:id", [check("id").isNumeric()], async (req, res) => {
   }
 });
 
-app.get("/logout", (req, res) => {
+app.delete("/logout", (req, res) => {
   req.logout(() => {
     res.end();
   });

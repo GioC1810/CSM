@@ -23,6 +23,21 @@ exports.getUser = (username) => {
   });
 };
 
+exports.getUsers = (username) => {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT * FROM USERS";
+    db.all(sql, [username], (err, rows) => {
+      if (err) reject(err);
+      if (rows == undefined || rows.length === 0) {
+        resolve({ error: "users not found" });
+      } else {
+        const users = rows.map(user => user.username);
+        resolve(users);
+      }
+    });
+  });
+};
+
 exports.getRoleAndNickNameByUsername = (username) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT role, nickname FROM USERS WHERE USERNAME = ?";
@@ -103,6 +118,7 @@ exports.getBlockByPagesId = (id) => {
       if (err) reject(err);
       const blockList = rows.map((block) => {
         return {
+          id: block.id,
           type: block.type,
           content: block.content,
           position: block.position,
@@ -115,7 +131,7 @@ exports.getBlockByPagesId = (id) => {
 
 exports.getWebSiteName = () => {
   return new Promise((resolve, reject) => {
-    const sql = "SELECT name FROM WEB_SITE_INFO WHERE id = 1";
+    const sql = "SELECT name FROM WEB_INFO WHERE id = 1";
     db.get(sql, (err, row) => {
       if (err) reject(err);
       resolve(row.name);
