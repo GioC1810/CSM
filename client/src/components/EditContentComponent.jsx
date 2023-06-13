@@ -6,13 +6,17 @@ import useAuth from "../hooks/useAuth";
 import ImageSelectorComponent from "./ImageSelectorComponent";
 import API from "../API";
 
-const EditContentComponent = ({ contents, setContentList, lastPosition }) => {
+const EditContentComponent = ({setErrMsg, contents, setContentList, lastPosition }) => {
   const blockTypes = ["header", "image", "paragraph"];
   const [type, setType] = useState("header");
   const [content, setContent] = useState("");
 
   const handleContentSubmit = (e) => {
     e.preventDefault();
+    if(!content){
+        setErrMsg("The content cannot be empty!")
+        return;
+    }
     setContentList([...contents, { type: type, content: content, position: lastPosition }]);
     setType("header")
     setContent("");

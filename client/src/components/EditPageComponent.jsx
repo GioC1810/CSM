@@ -5,12 +5,14 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import EditContentComponent from "./EditContentComponent";
 import BlockComponent from "./BlockComponent";
+import ChangeBlockComponent from "./ChangeBlockComponent";
 import API from "../API";
 
 const EditPageComponent = ({ setErrMsg }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const page = location.state;
+  const editing = page ? true : false;
   const { user } = useAuth();
   const [showContentForm, setShowContentForm] = useState(false);
   //page attributes states
@@ -23,7 +25,7 @@ const EditPageComponent = ({ setErrMsg }) => {
   const creationDate = page
     ? dayjs(page.creationDate).format("YYYY-MM-DD")
     : dayjs().format("YYYY-MM-DD");
-  const [author, setAuthor] = useState(page ? page.author : "");
+  const [author, setAuthor] = useState(page ? page.author : null);
   const [contentList, setContentList] = useState(
     page ? [...page.contents] : []
   );
@@ -46,9 +48,13 @@ const EditPageComponent = ({ setErrMsg }) => {
         setErrMsg(result.error);
       } else {
         setUsers(result);
+        if(!author){
+          setAuthor(users[0])
+        }
       }
     };
     retrieveUsers();
+   
   }, []);
 
   const handleSubmit = async (e) => {
@@ -70,14 +76,21 @@ const EditPageComponent = ({ setErrMsg }) => {
         "You have to add at least one content between an image or a paragraph"
       );
     } else {
-      console.log(author)
-      const result = await API.addPage({
-        title: title,
-        author: author,
-        creationDate: creationDate,
-        publicationDate: publicationDate,
-        contents: contentList,
-      });
+      let result;
+      let p = {
+          title: title,
+          author: author ? author : users[0],
+          creationDate: creationDate,
+          publicationDate: publicationDate,
+          contents: contentList,
+      }
+      if(editing){
+        p.id = page.id
+        result = await API.modifyPage(p);
+      } else {
+        result = await API.addPage(p);
+      }
+       console.log(result)
       if (result.error) {
         setErrMsg(result.error);
       } else {
@@ -136,6 +149,7 @@ const EditPageComponent = ({ setErrMsg }) => {
               contents={contentList}
               setContentList={setContentList}
               lastPosition={contentList.length}
+              setErrMsg={setErrMsg}
             />
           )}
           <Button
@@ -144,18 +158,11 @@ const EditPageComponent = ({ setErrMsg }) => {
           >
             {showContentForm ? "Close" : "Add block"}
           </Button>
-          {contentList.map((c, i) => (
-            <Row className="mt-3">
-              <Col>
-                <BlockComponent content={c} key={i} />
-              </Col>
-              <Col>
-                <Button variant="danger" onClick={() => handleContentDelete(i)}>
-                  Remove content
-                </Button>
-              </Col>
-            </Row>
-          ))}
+          <ChangeBlockComponent
+            contentList={contentList}
+            setContentList={setContentList}
+            handleContentDelete={handleContentDelete}
+          />
           <Button variant="info" type="submit">
             Add page
           </Button>

@@ -34,7 +34,7 @@ const PagesListComponent = ({setError, setOffice}) => {
     return(
         <ListGroup>
             {pages && pages.map(page =>{
-                 return <ListGroup.Item key={page.id}><PageComponent page={page} logged={location.pathname === "/back/pages"}/></ListGroup.Item>
+                 return <ListGroup.Item key={page.id}><PageComponent page={page} logged={location.pathname === "/back/pages"} setPages={setPages} pages={pages}/></ListGroup.Item>
             })}
         </ListGroup>
     );

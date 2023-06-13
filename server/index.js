@@ -246,7 +246,6 @@ app.put(
   [
     check("title").isLength({ min: 1, max: 20 }),
     check("author").isLength({ min: 5, max: 15 }),
-    check("contents[0].content").isLength({ min: 5 }),
     check("contents[0].position").isNumeric(),
     check("contents.length").isInt({ min: 2 }),
   ],
@@ -302,7 +301,7 @@ app.put(
       publicationDate: req.body.publicationDate,
     };
     try {
-      if (req.user.role == "admin") {
+      if (req.user.role === "admin") {
         console.log("admin role");
         await db_API.updatePageAdminMode(page);
       } else {

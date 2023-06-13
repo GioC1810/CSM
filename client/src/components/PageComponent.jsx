@@ -4,10 +4,12 @@ import dayjs from "dayjs";
 import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import BlockComponent from "./BlockComponent";
+import ConfirmDeleteComponent from "./ConfirmDeleteComponent";
 
-const PageComponent = ({ page, logged }) => {
+const PageComponent = ({ page, logged, setPages, pages }) => {
   const { user } = useAuth();
   const [showContent, setShowContent] = useState(false);
+  const [deleteConfermation, setDeleteConfermation] = useState(false);
   const navigate = useNavigate();
 
   const formatDate = (date, format) => dayjs(date).format(format);
@@ -56,7 +58,7 @@ const PageComponent = ({ page, logged }) => {
               <Button variant="warning" size="sm" onClick={() => navigate("/back/edit", {state: page})}>
               Edit page
               </Button>
-              <Button variant="danger" size="sm">
+              <Button variant="danger" size="sm" onClick={() => setDeleteConfermation(true)}>
                   Delete page
               </Button>
               {user.username && (
@@ -68,6 +70,8 @@ const PageComponent = ({ page, logged }) => {
           )}
         </Col>
       </Row>
+      {deleteConfermation && 
+      <ConfirmDeleteComponent setPages={setPages} setDeleteConfermation={setDeleteConfermation} pageId={page.id} pages={pages}/>}
     </Container>
   );
 };
