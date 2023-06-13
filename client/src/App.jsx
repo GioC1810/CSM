@@ -18,30 +18,18 @@ function App() {
   const { user, setUser } = useAuth();
   const [errMsg, setErrMsg] = useState("");
   const [office, setOffice] = useState("");
-  const [pages, setPages] = useState([]);
 
   useEffect(() => {
     const checkSesssion = async () => {
       const result = await API.getUserInfo();
-      if (result.error) {
-        setErrMsg(result.error);
+      if (!result.error){ 
+        setUser(result);  
       } else {
-        setUser(result);
+        setUser({});
+        navigate("/login");
       }
     };
     checkSesssion();
-  }, []);
-
-  useEffect(() => {
-    const getPages = async () => {
-      const result = await API.getAllPages();
-      if (result.error) {
-        setError(result.error);
-      } else {
-        setPages(result);
-      }
-    };
-    getPages();
   }, []);
 
   const handleLogout = async () => {
@@ -65,7 +53,7 @@ function App() {
         //Front office
         <Route
           path="/front"
-          element={<PagesListComponent setError={setErrMsg} pages={pages} setOffice={setOffice}/>}
+          element={<PagesListComponent setError={setErrMsg} setOffice={setOffice}/>}
         />
         //Back office
         <Route
@@ -76,7 +64,7 @@ function App() {
           path="/back/pages"
           element={
             user.username ? (
-              <PagesListComponent setError={setErrMsg} pages={pages} setOffice={setOffice}/>
+              <PagesListComponent setError={setErrMsg} setOffice={setOffice}/>
             ) : (
               <NotAuthorizedComponent />
             )
@@ -86,7 +74,7 @@ function App() {
           path="/back/edit/"
           element={
             user.username ? (
-              <EditPageComponent pages={pages} setPages={setPages} setErrMsg={setErrMsg}/>
+              <EditPageComponent setErrMsg={setErrMsg}/>
             ) : (
               <NotAuthorizedComponent />
             )

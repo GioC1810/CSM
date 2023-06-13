@@ -83,7 +83,7 @@ const isLogged = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).send("NOT AUTHENTICATED - GO AWAY");
+    res.status(401).send({error: "NOT AUTHENTICATED - GO AWAY"});
   }
 };
 
@@ -92,14 +92,14 @@ function requireAdminRole() {
     if (req.isAuthenticated() && req.user.role === "admin") {
       next();
     } else {
-      res.sendStatus(403);
+      res.status(403).send({error: "role admin is required to perform the request"});
     }
   };
 }
 
 app.get("/page/all", async (req, res) => {
   try{
-  const pages = await db_API.getPages();
+  let pages = await db_API.getPages();
   const pagesWithBlock = await Promise.all(pages.map(async page => {
     const block = await db_API.getBlockByPagesId(page.id);
     page.contents = block;
@@ -174,7 +174,6 @@ app.post(
   [
     check("title").isLength({ min: 1, max: 20 }),
     check("author").isLength({ min: 5, max: 15 }),
-    check("contents[0].content").isLength({ min: 5 }),
     check("contents[0].position").isNumeric(),
     check("contents.length").isInt({ min: 2 }),
   ],

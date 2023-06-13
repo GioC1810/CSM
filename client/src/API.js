@@ -101,5 +101,25 @@ const getUsers = async () =>{
   }
 }
 
-const API = { getSiteName, logIn, getUserInfo, logout, getAllPages, getUsers };
+const addPage = async (page) => {
+  try{
+    console.log(JSON.stringify(page))
+    const result = await getJson(
+      fetch(SERVER_URL + "page/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // this parameter specifies that authentication cookie must be forwared
+        mode: "cors",
+        body: JSON.stringify(page)
+      })
+    );
+    return result;
+  } catch(err){
+    return err;
+  }
+}
+
+const API = { getSiteName, logIn, getUserInfo, logout, getAllPages, getUsers, addPage };
 export default API;
