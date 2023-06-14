@@ -40,7 +40,7 @@ const NavigationBar = (props) => {
         </div>
 
         <Nav className="ml-auto">
-          {user.role ? (
+          {user?.role ? (
             <Nav.Item
               onClick={() => {
                 navigate("/logout");

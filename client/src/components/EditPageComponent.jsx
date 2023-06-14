@@ -31,6 +31,7 @@ const EditPageComponent = ({ setErrMsg }) => {
   );
 
   const [users, setUsers] = useState([]);
+  const [lastId, setLastId] = useState(0);
 
   const handlePublicationDate = (e) => {
     const newPubDate = dayjs(e.target.value);
@@ -40,6 +41,16 @@ const EditPageComponent = ({ setErrMsg }) => {
       setPublicationDate(newPubDate.format("YYYY-MM-DD"));
     }
   };
+
+  useEffect(() => {
+    if (contentList.length > 0) {
+      const maxId = contentList.reduce((v1, v2) => (v1.id > v2.id ? v1 : v2)).id;
+      console.log("lastid: ", maxId)
+      setLastId(maxId + 1);
+    } else {
+      setLastId(0);
+    }
+  }, [contentList])
 
   useEffect(() => {
     const retrieveUsers = async () => {
@@ -84,6 +95,7 @@ const EditPageComponent = ({ setErrMsg }) => {
           publicationDate: publicationDate,
           contents: contentList,
       }
+      console.log(p)
       if(editing){
         p.id = page.id
         result = await API.modifyPage(p);
@@ -115,6 +127,7 @@ const EditPageComponent = ({ setErrMsg }) => {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              required
             />
             <Form.Label>
               {user.role === "admin" && page && "Original "}Author{" "}
@@ -148,7 +161,7 @@ const EditPageComponent = ({ setErrMsg }) => {
             <EditContentComponent
               contents={contentList}
               setContentList={setContentList}
-              lastPosition={contentList.length}
+              lastId={lastId}
               setErrMsg={setErrMsg}
             />
           )}

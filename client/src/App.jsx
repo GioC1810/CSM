@@ -5,7 +5,6 @@ import { Container, Toast } from "react-bootstrap";
 import API from "./API.js";
 import NavigationBar from "./components/NavigationBar";
 import LoginComponent from "./components/LoginComponent";
-import HomeComponent from "./components/HomeComponent";
 import NotAuthorizedComponent from "./components/NotAuthorizedComponent";
 import LogoutComponent from "./components/LogoutComponent";
 import PagesListComponent from "./components/PagesListComponent";
@@ -34,7 +33,7 @@ function App() {
 
   const handleLogout = async () => {
     await API.logout();
-    setUser({});
+    setUser();
     navigate("/login");
   };
 
@@ -63,7 +62,7 @@ function App() {
         <Route
           path="/back/pages"
           element={
-            user.username ? (
+            user ? (
               <PagesListComponent setError={setErrMsg} setOffice={setOffice}/>
             ) : (
               <NotAuthorizedComponent />
@@ -73,7 +72,7 @@ function App() {
         <Route
           path="/back/edit/"
           element={
-            user.username ? (
+            user ? (
               <EditPageComponent setErrMsg={setErrMsg}/>
             ) : (
               <NotAuthorizedComponent />

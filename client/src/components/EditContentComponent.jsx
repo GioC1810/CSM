@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import ImageSelectorComponent from "./ImageSelectorComponent";
 import API from "../API";
 
-const EditContentComponent = ({setErrMsg, contents, setContentList, lastPosition }) => {
+const EditContentComponent = ({setErrMsg, contents, setContentList, lastId }) => {
   const blockTypes = ["header", "image", "paragraph"];
   const [type, setType] = useState("header");
   const [content, setContent] = useState("");
@@ -17,10 +17,12 @@ const EditContentComponent = ({setErrMsg, contents, setContentList, lastPosition
         setErrMsg("The content cannot be empty!")
         return;
     }
-    setContentList([...contents, { type: type, content: content, position: lastPosition }]);
+    setContentList([...contents, { type: type, content: content, position: contents.length, id: lastId }]);
     setType("header")
     setContent("");
   };
+
+
 
   return (
     <Container>

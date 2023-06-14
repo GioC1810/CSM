@@ -28,9 +28,9 @@ const BlockComponent = ({ content }) => {
                 <Card.Title>{content.content.replace(".jpg", "")}</Card.Title>
               </Card.Body>
             </Card>
-          ) : (
-            <p>{content.content}</p>
-          )}
+          ) : content.type === "header" ? (
+            <h3>{content.content}</h3>
+          ) : <p>{content.content}</p>}
         </Col>
       </Row>
     </Container>

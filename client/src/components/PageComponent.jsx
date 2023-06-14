@@ -53,7 +53,7 @@ const PageComponent = ({ page, logged, setPages, pages }) => {
             )}
           </Container>
 
-          {(user.role === "admin" || user.username === page.author) && logged && (
+          {(user?.role === "admin" || user?.username === page.author) && logged && (
             <Container className="d-flex justify-content-between">
               <Button variant="warning" size="sm" onClick={() => navigate("/back/edit", {state: page})}>
               Edit page
@@ -61,7 +61,7 @@ const PageComponent = ({ page, logged, setPages, pages }) => {
               <Button variant="danger" size="sm" onClick={() => setDeleteConfermation(true)}>
                   Delete page
               </Button>
-              {user.username && (
+              {user?.username && (
                 <Button variant="success" size="sm" onClick={() => navigate("/back/edit")}>
                     Create new page
                 </Button>

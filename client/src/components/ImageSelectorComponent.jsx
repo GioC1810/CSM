@@ -20,7 +20,7 @@ const ImageSelectorComponent = ({ setContent }) => {
     { name: "canoa.jpg", selected: false },
     { name: "mare.jpg", selected: false },
     { name: "paesaggio.jpg", selected: false },
-    { name: "piramide.jpg", selected: false },
+    { name: "piramide.jpg", selected: false }
   ]);
 
   const handleClick = (img) => {
