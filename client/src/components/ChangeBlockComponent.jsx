@@ -5,7 +5,7 @@ import { useLocation, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import ImageSelectorComponent from "./ImageSelectorComponent";
 import BlockComponent from "./BlockComponent";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Droppable, Draggable, DragDropContext } from "@hello-pangea/dnd";
 import API from "../API";
 
 const ChangeBlockComponent = ({
@@ -24,17 +24,16 @@ const ChangeBlockComponent = ({
     )
       return;
 
-    
-     const reorderedStores = [...contentList];
-     const storeSourceIndex = source.index;
-     const storeDestinatonIndex = destination.index;
-     const [removedStore] = reorderedStores.splice(storeSourceIndex, 1);
-     reorderedStores.splice(storeDestinatonIndex, 0,removedStore);
-     reorderedStores.forEach((el, index) => {
-        el.position = index;
-        return el;
-     })
-     return setContentList(reorderedStores);
+    const reorderedStores = [...contentList];
+    const storeSourceIndex = source.index;
+    const storeDestinatonIndex = destination.index;
+    const [removedStore] = reorderedStores.splice(storeSourceIndex, 1);
+    reorderedStores.splice(storeDestinatonIndex, 0, removedStore);
+    reorderedStores.forEach((el, index) => {
+      el.position = index;
+      return el;
+    });
+    return setContentList(reorderedStores);
   };
 
   return (
@@ -42,31 +41,33 @@ const ChangeBlockComponent = ({
       <Droppable droppableId="droppable" type="content-list">
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {contentList.sort((c1, c2) => c1.position - c2.position).map((c, i) => (
-              <Draggable key={c.id} draggableId={c.id.toString()} index={i}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <Row className="mt-3">
-                      <Col>
-                        <BlockComponent content={c} />
-                      </Col>
-                      <Col>
-                        <Button
-                          variant="danger"
-                          onClick={() => handleContentDelete(i)}
-                        >
-                          Remove content
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {contentList
+              .sort((c1, c2) => c1.position - c2.position)
+              .map((c, i) => (
+                <Draggable key={c.id} draggableId={c.id.toString()} index={i}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <Row className="mt-3">
+                        <Col>
+                          <BlockComponent content={c} />
+                        </Col>
+                        <Col>
+                          <Button
+                            variant="danger"
+                            onClick={() => handleContentDelete(i)}
+                          >
+                            Remove content
+                          </Button>
+                        </Col>
+                      </Row>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
             {provided.placeholder}
           </div>
         )}
