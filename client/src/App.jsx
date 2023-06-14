@@ -21,8 +21,8 @@ function App() {
   useEffect(() => {
     const checkSesssion = async () => {
       const result = await API.getUserInfo();
-      if (!result.error){ 
-        setUser(result);  
+      if (!result.error) {
+        setUser(result);
       } else {
         setUser({});
         navigate("/login");
@@ -43,27 +43,35 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={<LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice}/>}
+          element={
+            <LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice} />
+          }
         />
         <Route
           path="/"
-          element={<LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice}/>}
+          element={
+            <LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice} />
+          }
         />
         //Front office
         <Route
           path="/front"
-          element={<PagesListComponent setError={setErrMsg} setOffice={setOffice}/>}
+          element={
+            <PagesListComponent setError={setErrMsg} setOffice={setOffice} />
+          }
         />
         //Back office
         <Route
           path="/logout"
-          element={<LogoutComponent logout={handleLogout} setOffice={setOffice}/>}
+          element={
+            <LogoutComponent logout={handleLogout} setOffice={setOffice} />
+          }
         ></Route>
         <Route
           path="/back/pages"
           element={
-            user ? (
-              <PagesListComponent setError={setErrMsg} setOffice={setOffice}/>
+            user?.username ? (
+              <PagesListComponent setError={setErrMsg} setOffice={setOffice} />
             ) : (
               <NotAuthorizedComponent />
             )
@@ -73,7 +81,7 @@ function App() {
           path="/back/edit/"
           element={
             user ? (
-              <EditPageComponent setErrMsg={setErrMsg}/>
+              <EditPageComponent setErrMsg={setErrMsg} setOffice={setOffice}/>
             ) : (
               <NotAuthorizedComponent />
             )

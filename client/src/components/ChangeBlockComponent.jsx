@@ -34,7 +34,6 @@ const ChangeBlockComponent = ({
         el.position = index;
         return el;
      })
-     reorderedStores.forEach(el => console.log(el.content, el.position))
      return setContentList(reorderedStores);
   };
 

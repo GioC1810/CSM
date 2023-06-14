@@ -1,13 +1,28 @@
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
-import { BsDisplay, BsPersonCircle, BsPersonSlash } from "react-icons/bs";
+import {
+  Navbar,
+  Container,
+  Nav,
+  NavDropdown,
+  Modal,
+  Button,
+  Form,
+} from "react-bootstrap";
+import {
+  BsDisplay,
+  BsPersonCircle,
+  BsPersonSlash,
+  BsFillPencilFill,
+} from "react-icons/bs";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../API";
 import useAuth from "../hooks/useAuth";
 
 const NavigationBar = (props) => {
   const [siteName, setSiteName] = useState("");
+  const [modifiedSiteName, setModifiedSiteName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [changeSiteName, setChangeSiteName] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -15,10 +30,23 @@ const NavigationBar = (props) => {
     API.getSiteName()
       .then((name) => {
         setSiteName(name);
+        setModifiedSiteName(name);
         setLoading(false);
       })
       .catch((err) => setSiteName("..."));
   }, []);
+
+  const handleChangeName = async (e) => {
+    e.preventDefault();
+    const result = await API.changeSiteName(modifiedSiteName);
+    if (result.error) {
+      setErrMsg(result.error);
+    } else {
+      setSiteName(modifiedSiteName);
+      setModifiedSiteName("");
+    }
+    setChangeSiteName(false);
+  };
 
   return (
     <Navbar bg="dark" variant="dark">
@@ -33,11 +61,50 @@ const NavigationBar = (props) => {
         >
           <Navbar.Brand style={{ color: "grey" }}>
             {loading ? "..." : siteName}
+            {user?.role === "admin" && (
+              <BsFillPencilFill
+                style={{ color: "white", marginLeft: "10px" }}
+                size={15}
+                onClick={() => setChangeSiteName(true)}
+              />
+            )}
           </Navbar.Brand>
           <Navbar.Brand style={{ color: "red" }}>
             {user ? (props.office ? props.office : "") : ""}
           </Navbar.Brand>
         </div>
+        <Nav>
+          <NavDropdown title="Navigate" id="nav-dropdown">
+            <NavDropdown.Item>
+              <Link
+                to="/front"
+                style={{ textDecoration: "none", color: "#455d7a" }}
+              >
+                Front office
+              </Link>
+            </NavDropdown.Item>
+            {user?.username && (
+              <>
+                <NavDropdown.Item>
+                  <Link
+                    to="/back/pages"
+                    style={{ textDecoration: "none", color: "#455d7a" }}
+                  >
+                    Back office
+                  </Link>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <Link
+                    to="/back/edit"
+                    style={{ textDecoration: "none", color: "#455d7a" }}
+                  >
+                    Create new page
+                  </Link>
+                </NavDropdown.Item>
+              </>
+            )}
+          </NavDropdown>
+        </Nav>
 
         <Nav className="ml-auto">
           {user?.role ? (
@@ -64,6 +131,36 @@ const NavigationBar = (props) => {
           )}
         </Nav>
       </Container>
+      {changeSiteName && (
+        <Modal show={true} animation={false}>
+          <Modal.Header>
+            <Modal.Title>Change App Name</Modal.Title>
+          </Modal.Header>
+          <Form onSubmit={handleChangeName}>
+            <Modal.Body>
+              Are you sure you want to change the name of the app?
+              <Form.Control
+                size="md"
+                type="text"
+                value={modifiedSiteName}
+                onChange={(e) => setModifiedSiteName(e.target.value)}
+                required
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setChangeSiteName(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="danger" type="submit">
+                Confirm
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+      )}
     </Navbar>
   );
 };

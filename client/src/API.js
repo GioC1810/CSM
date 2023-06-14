@@ -157,5 +157,24 @@ const modifyPage = async (page) => {
   }
 }
 
-const API = { getSiteName, logIn, getUserInfo, logout, getAllPages, getUsers, addPage, deletePage, modifyPage };
+const changeSiteName = async (name) => {
+  try{
+    const result = await getJson(
+      fetch(SERVER_URL + `site-name`, {
+        method : "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // this parameter specifies that authentication cookie must be forwared
+        mode: "cors",
+        body: JSON.stringify({siteName: name})
+      })
+    );
+    return result;
+  } catch(err){
+    return err;
+  }
+}
+
+const API = { getSiteName, logIn, getUserInfo, logout, getAllPages, getUsers, addPage, deletePage, modifyPage, changeSiteName };
 export default API;

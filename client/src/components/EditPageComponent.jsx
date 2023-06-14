@@ -1,14 +1,13 @@
 import { Container, Button, Row, Col, Form, Image } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import EditContentComponent from "./EditContentComponent";
-import BlockComponent from "./BlockComponent";
 import ChangeBlockComponent from "./ChangeBlockComponent";
 import API from "../API";
 
-const EditPageComponent = ({ setErrMsg }) => {
+const EditPageComponent = ({ setErrMsg, setOffice }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const page = location.state;
@@ -45,7 +44,6 @@ const EditPageComponent = ({ setErrMsg }) => {
   useEffect(() => {
     if (contentList.length > 0) {
       const maxId = contentList.reduce((v1, v2) => (v1.id > v2.id ? v1 : v2)).id;
-      console.log("lastid: ", maxId)
       setLastId(maxId + 1);
     } else {
       setLastId(0);
@@ -65,7 +63,7 @@ const EditPageComponent = ({ setErrMsg }) => {
       }
     };
     retrieveUsers();
-   
+    setOffice("back-office")
   }, []);
 
   const handleSubmit = async (e) => {
@@ -95,14 +93,12 @@ const EditPageComponent = ({ setErrMsg }) => {
           publicationDate: publicationDate,
           contents: contentList,
       }
-      console.log(p)
       if(editing){
         p.id = page.id
         result = await API.modifyPage(p);
       } else {
         result = await API.addPage(p);
       }
-       console.log(result)
       if (result.error) {
         setErrMsg(result.error);
       } else {

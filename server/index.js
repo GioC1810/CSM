@@ -67,23 +67,23 @@ app.use(passport.authenticate("session"));
 
 app.post("/login", passport.authenticate("local"), (req, res) => {
   db_API.getRoleAndNickNameByUsername(req.body.username).then((userData) => {
-    res.json({username: req.body.username, ...userData});
+    res.json({ username: req.body.username, ...userData });
   });
 });
 
-app.get('/session', (req, res) =>{
-  if(req.isAuthenticated()){
+app.get("/session", (req, res) => {
+  if (req.isAuthenticated()) {
     res.status(200).json(req.user);
-  } else{
-    res.status(401).json({error: "user not authenitcated"})
+  } else {
+    res.status(401).json({ error: "user not authenitcated" });
   }
-})
+});
 
 const isLogged = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).send({error: "NOT AUTHENTICATED - GO AWAY"});
+    res.status(401).send({ error: "NOT AUTHENTICATED - GO AWAY" });
   }
 };
 
@@ -92,49 +92,76 @@ function requireAdminRole() {
     if (req.isAuthenticated() && req.user.role === "admin") {
       next();
     } else {
-      res.status(403).send({error: "role admin is required to perform the request"});
+      res
+        .status(403)
+        .send({ error: "role admin is required to perform the request" });
     }
   };
 }
 
 app.get("/page/all", async (req, res) => {
-  try{
-  let pages = await db_API.getPages();
-  const pagesWithBlock = await Promise.all(pages.map(async page => {
-    const block = await db_API.getBlockByPagesId(page.id);
-    page.contents = block;
-    return page;
-  }))
-  pagesWithBlock.sort((p1, p2) => {
-    if (p1.publicationDate && p2.publicationDate) {
-      return p1.publicationDate.diff(p2.publicationDate);
-    } else if (p1.publicationDate) {
-      return -1;
-    } else if (p2.publicationDate) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-  res.status(200).json(pagesWithBlock);
-}catch(err){
-  res.status(500).json({ error: "an error occurred", content: err });
-}
+  try {
+    let pages = await db_API.getPages();
+    const pagesWithBlock = await Promise.all(
+      pages.map(async (page) => {
+        const block = await db_API.getBlockByPagesId(page.id);
+        page.contents = block;
+        return page;
+      })
+    );
+    pagesWithBlock.sort((p1, p2) => {
+      if (p1.publicationDate && p2.publicationDate) {
+        return p1.publicationDate.diff(p2.publicationDate);
+      } else if (p1.publicationDate) {
+        return -1;
+      } else if (p2.publicationDate) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    res.status(200).json(pagesWithBlock);
+  } catch (err) {
+    res.status(500).json({ error: "an error occurred", content: err });
+  }
 });
 
 app.get("/site-name", (req, res) => {
-  db_API.getWebSiteName()
-  .then(name => res.status(200).json(name))
-  .catch(err => res.status(500).json({error: "Cannot connect to db"}));
+  db_API
+    .getWebSiteName()
+    .then((name) => res.status(200).json(name))
+    .catch((err) => res.status(500).json({ error: "Cannot connect to db" }));
 });
+
+app.put(
+  "/site-name",
+  [check("siteName").isLength({ min: 1, max: 50 })],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(errors);
+    }
+    try {
+      await db_API.modifyWebSiteName(req.body.siteName);
+      res.status(200).json({ message: "site name change correctly" });
+    } catch (err) {
+      res.status(400).json({ error: "db error" });
+    }
+  }
+);
 
 app.use(isLogged);
 
 app.get("/users", (req, res) => {
-  db_API.getUsers()
-  .then(users => {console.log(users); res.status(200).json(users)})
-  .catch(err => res.status(500).json({error: "errror in retrieving the users"}))
-})
+  db_API
+    .getUsers()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "errror in retrieving the users" })
+    );
+});
 
 app.get("/response", (req, res) => {
   res.json("hello, you are authenitcated");
@@ -146,24 +173,23 @@ app.get("/admin", requireAdminRole(), (req, res) => {
 
 app.get("/page/author", async (req, res) => {
   if (req.query.user) {
-    try{
-    const pages = await db_API.getPagesByAuthorId(req.query.user);
-    console.log(pages);
-    pages.sort((p1, p2) => {
-      if (p1.publicationDate && p2.publicationDate) {
-        return p1.publicationDate.diff(p2.publicationDate);
-      } else if (p1.publicationDate) {
-        return -1;
-      } else if (p2.publicationDate) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    res.status(200).json(pages);
-  }catch(err){
-    res.status(500).json({ error: "an error occurred", content: err });
-  }
+    try {
+      const pages = await db_API.getPagesByAuthorId(req.query.user);
+      pages.sort((p1, p2) => {
+        if (p1.publicationDate && p2.publicationDate) {
+          return p1.publicationDate.diff(p2.publicationDate);
+        } else if (p1.publicationDate) {
+          return -1;
+        } else if (p2.publicationDate) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      res.status(200).json(pages);
+    } catch (err) {
+      res.status(500).json({ error: "an error occurred", content: err });
+    }
   } else {
     res.status(422).json({ error: "the user field is not present" });
   }
@@ -302,10 +328,8 @@ app.put(
     };
     try {
       if (req.user.role === "admin") {
-        console.log("admin role");
         await db_API.updatePageAdminMode(page);
       } else {
-        console.log("user role");
         await db_API.updatePage(page);
       }
 

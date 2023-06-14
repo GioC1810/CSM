@@ -31,7 +31,7 @@ exports.getUsers = (username) => {
       if (rows == undefined || rows.length === 0) {
         resolve({ error: "users not found" });
       } else {
-        const users = rows.map(user => user.username);
+        const users = rows.map((user) => user.username);
         resolve(users);
       }
     });
@@ -72,7 +72,8 @@ exports.getPages = () => {
             title: page.title,
             author: page.author,
             creationDate: dayjs(page.creationDate, "dd/MM/YYYY"),
-            publicationDate: page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
+            publicationDate:
+              page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
             type: pageType,
           };
         });
@@ -101,7 +102,8 @@ exports.getPagesByAuthorId = (id) => {
             title: page.title,
             author: page.author,
             creationDate: dayjs(page.creationDate, "dd/MM/YYYY"),
-            publicationDate: page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
+            publicationDate:
+              page.publicationDate && dayjs(page.publicationDate, "dd/MM/YYYY"),
             type: pageType,
           };
         });
@@ -141,14 +143,10 @@ exports.getWebSiteName = () => {
 
 exports.modifyWebSiteName = (name) => {
   return new Promise((resolve, reject) => {
-    const sql = "UPDATE WEB_SITE_INFO SET name=? WHERE ID = 1";
+    const sql = "UPDATE WEB_INFO SET name=? WHERE ID = 1";
     db.get(sql, [name], (err) => {
       if (err) reject(err);
-      if (this.changes != 1) {
-        resolve({ error: "No update" });
-      } else {
-        resolve({ ok: "Name update" });
-      }
+      resolve({ error: "No update" });
     });
   });
 };
@@ -160,8 +158,10 @@ exports.addPage = (page) => {
     db.run(
       sql,
       [page.author, page.creationDate, page.publicationDate, page.title],
-      function(err){
-        if (err) {reject(err)};
+      function (err) {
+        if (err) {
+          reject(err);
+        }
         resolve();
       }
     );
@@ -185,59 +185,64 @@ exports.addBlocks = (pageId, blocks) => {
       });
     });
     Promise.all(insertions)
-    .then(() => resolve())
-    .catch((err) => reject())
+      .then(() => resolve())
+      .catch((err) => reject());
   });
 };
 
-exports.getLastId = () =>{
-  return new Promise((resolve, reject)=>{
+exports.getLastId = () => {
+  return new Promise((resolve, reject) => {
     const sql = "SELECT last_insert_rowid() as lastId";
     db.get(sql, [], (err, row) => {
-      if(err) {reject(err)}
-      resolve(row.lastId)
-    })
-  })
-}
+      if (err) {
+        reject(err);
+      }
+      resolve(row.lastId);
+    });
+  });
+};
 
-exports.updatePage = (page) =>{
-  return new Promise((resolve, reject) =>{
+exports.updatePage = (page) => {
+  return new Promise((resolve, reject) => {
     const sql = "UPDATE PAGES SET title = ?, publicationDate = ? WHERE id = ?";
-    db.run(sql, [page.title, page.publicationDate, page.id], (err) =>{
-      if(err) reject(err);
+    db.run(sql, [page.title, page.publicationDate, page.id], (err) => {
+      if (err) reject(err);
       resolve();
-    })
-  })
-}
+    });
+  });
+};
 
-exports.deletePage = (id) =>{
-  return new Promise((resolve, reject) =>{
+exports.deletePage = (id) => {
+  return new Promise((resolve, reject) => {
     const sql = "DELETE FROM PAGES WHERE id = ?";
     db.run(sql, [id], (err) => {
-      if(err) reject(err);
+      if (err) reject(err);
       resolve();
-    })
-  })
-}
+    });
+  });
+};
 
-exports.updatePageAdminMode = (page) =>{
-  return new Promise((resolve, reject) =>{
-    const sql = "UPDATE PAGES SET author = ?, title = ?, publicationDate = ? WHERE id = ?";
-    db.run(sql, [page.author, page.title, page.publicationDate, page.id], (err) =>{
-      if(err) reject(err);
-      resolve();
-    })
-  })
-}
+exports.updatePageAdminMode = (page) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "UPDATE PAGES SET author = ?, title = ?, publicationDate = ? WHERE id = ?";
+    db.run(
+      sql,
+      [page.author, page.title, page.publicationDate, page.id],
+      (err) => {
+        if (err) reject(err);
+        resolve();
+      }
+    );
+  });
+};
 
-exports.deleteBlocks = (pageId) =>{
-  return new Promise((resolve, reject) =>{
+exports.deleteBlocks = (pageId) => {
+  return new Promise((resolve, reject) => {
     const sql = "DELETE FROM BLOCKS WHERE page = ?";
     db.run(sql, [pageId], (err) => {
-      if(err) reject(err);
+      if (err) reject(err);
       resolve();
-    })
-  })
-}
-
-
+    });
+  });
+};

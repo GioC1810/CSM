@@ -1,7 +1,7 @@
 import { Container, Button, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import dayjs from "dayjs";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import BlockComponent from "./BlockComponent";
 import ConfirmDeleteComponent from "./ConfirmDeleteComponent";

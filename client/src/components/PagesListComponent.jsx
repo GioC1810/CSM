@@ -13,10 +13,6 @@ const PagesListComponent = ({setError, setOffice}) => {
     const [pages, setPages] = useState([]);
 
     useEffect(() => {
-        setOffice(location.pathname === "/front" ? "front-office" : "back-office");
-    }, []);
-
-    useEffect(() => {
         const getPages = async () => {
           let result = await API.getAllPages();
           if (result.error) {
@@ -29,7 +25,8 @@ const PagesListComponent = ({setError, setOffice}) => {
           }
         };
         getPages();
-      }, []);
+        setOffice(location.pathname === "/front" ? "front-office" : "back-office");
+      }, [location]);
 
     return(
         <ListGroup>
