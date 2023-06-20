@@ -92,6 +92,7 @@
   } 
   ```
   - response bodies content for incorrect requests:
+
   -for error about missing content or invalid date
   ```json
   {
