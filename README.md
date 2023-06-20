@@ -352,6 +352,11 @@ representing the fron office
 ![Screenshot](./img/screenshot.jpg)
 
 ## Users Credentials
-
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+### User1
+- user1@gmail.com, pdfg456ty2, role: admin, nickname: user1
+### User2
+- user2@gmail.com, qd13e23dx, role: user, nickname: user2
+### User3
+- user3@gmail.com, 3jkn4tui3h53992, role: user, nickname: user3 
+### User4
+- user4@gmail.com, jbru4734f3u, role: admin, nickname: user4
