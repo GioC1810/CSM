@@ -62,10 +62,11 @@
   }
   ```
 - PUT `/page/:id` (api to modify an existing page)
+  
   content-type: application/json
   - request parameters: id of the page to modify
   - request body:
- ```json
+  ```json
   {
     "title" : "page title",
     "author" : "user1@gmail.com",
@@ -113,7 +114,7 @@
     ]
   }
   ```
- -for error about operation on the page not valid(like a not admin user who attempts to modify a page of another user)
+   -for error about operation on the page not valid(like a not admin user who attempts to modify a page of another user)
   ```json
   {
     "error": "user not authorized to perform this operation"
@@ -141,8 +142,8 @@
   {
     "error": "user not authorized to perform this operation"
   }
-
-  - PUT `/site-name` (api to modify the name of a site)
+  ```
+- PUT `/site-name` (api to modify the name of a site)
   content-type: application/json
   - request parameters: id of the page to delete
   - request body: 
@@ -192,8 +193,8 @@
   - response body content for wrong credentials:
     status 401, Unauthorized
 - GET `/page/all` (api to retrieve all the pages available)
-- in the case of an authenitcated user it returns all the pages
-- in the case of a non authenitcated user it returns only the published pages
+  - in the case of an authenitcated user it returns all the pages
+  - in the case of a non authenitcated user it returns only the published pages
   
   content-type: application/json
   
@@ -263,7 +264,8 @@
       "content" : "error description"
     }
     ```
-  - GET `/users` (api to get all the users present)
+- GET `/users` (api to get all the users present)
+  
   content-type: application/json
   - request parameters: none
   - request body: none
@@ -282,7 +284,7 @@
     "error": "errror in retrieving the users"
   }
   ```
-  - GET `/site-name` (api to get the name of the site)
+- GET `/site-name` (api to get the name of the site)
   content-type: application/json
   - request parameters: none
   - request body: none
