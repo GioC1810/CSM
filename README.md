@@ -10,8 +10,10 @@
 ### Authenitcated API
 
 - DELETE `/logout` (api to perform the logout from the session)
-  - request parameters: none
+  
+  - request parameters and request body: none
   - response body content for authenitcated user:
+  ```json
   {
     "result": "logout executed"
   } 
@@ -19,28 +21,104 @@
   {
     "error": "NOT AUTHENTICATED - GO AWAY"
   }
-    
+  ```
+- POST `/page/` (api to create and add a new page)
+  - request parameters: none
+  - request body:
+   ```json
+  {
+    "title" : "page title",
+    "author" : "user1@gmail.com",
+    "creationDate" : "01/01/2011",
+    "publicationDate" : "",
+    "contents" : [
+        {
+            "type": "header",
+            "content": "prova header",
+            "position" : 1
+        },
+        {
+            "type": "image",
+            "content": "piramide.jpg",
+            "position" : 2
+        } 
+    ]
+  }
+  ```
+  - response body content for correct request:
+  ```json
+  {
+     "message": "page inserted correctly with its content"
+  } 
+  - response body content for incorrect request:
+  {
+    "error": "the type of the content is not valid"
+  }
+  ```
+- PUT `/page/:id` (api to modify an existing page)
+  - request parameters: id of the page to modify
+  - request body:
+ ```json
+  {
+    "title" : "page title",
+    "author" : "user1@gmail.com",
+    "creationDate" : "01/01/2011",
+    "publicationDate" : "",
+    "contents" : [
+        {
+            "type": "header",
+            "content": "prova header",
+            "position" : 1
+        },
+        {
+            "type": "image",
+            "content": "piramide.jpg",
+            "position" : 2
+        } 
+    ]
+  }
+  ```
+  - response body content for correct request:
+  ```json
+  {
+     "message": "page modified correctly"
+  } 
+  - response body content for incorrect request:
+  {
+    "error": "the type of the content is not valid"
+  }
+  ```json
+
 ### Not Authenitcated API
 
-- POST `/login` (api to perform the login) **
+- POST `/login` (api to perform the login)
+  
   content-type: application/json
   - request body content :
+  ```json
   {
     "username" : "user1@gmail.com",
     "password" : "password"
   }
+  ```
   - response body content for correct credentials:
+  ```json
   {
     "username": "user1@gmail.com",
     "role": "admin",
     "nickname": "user1" 
   } 
+  ```
   - response body content for wrong credentials:
     status 401, Unauthorized
 - GET `/page/all` (api to retrieve all the pages available)
+  
   content-type: application/json
+  
   - request parameters and request body content: none
+    
   - response body content :
+  ```json
   [
     {
         "id": 4,
@@ -92,14 +170,17 @@
             }
         ]
     }
-  ] 
+  ]
+  ```
   - response body content in case some errors occurs (typically db ERROR):
+    
     status 500
+    ```json
     {
       error: "an error occurred",
       content: "error description"
     }
-
+    ```
 ## Database Tables
 
 - Table `users` - contains xx yy zz
