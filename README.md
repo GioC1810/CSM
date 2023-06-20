@@ -17,7 +17,9 @@
   {
     "result": "logout executed"
   } 
+  ```
   - response body content for non authenitcated user:
+  ```json
   {
     "error": "NOT AUTHENTICATED - GO AWAY"
   }
@@ -46,11 +48,14 @@
   }
   ```
   - response body content for correct request:
+    
   ```json
   {
      "message": "page inserted correctly with its content"
   } 
+   ```
   - response body content for incorrect request:
+  ```json
   {
     "error": "the type of the content is not valid"
   }
@@ -83,11 +88,13 @@
   {
      "message": "page modified correctly"
   } 
+  ```
   - response body content for incorrect request:
+  ```json
   {
     "error": "the type of the content is not valid"
   }
-  ```json
+  ```
 
 ### Not Authenitcated API
 
