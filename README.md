@@ -25,6 +25,7 @@
   }
   ```
 - POST `/page/` (api to create and add a new page)
+  content-type: application/json
   - request parameters: none
   - request body:
    ```json
@@ -61,6 +62,7 @@
   }
   ```
 - PUT `/page/:id` (api to modify an existing page)
+  content-type: application/json
   - request parameters: id of the page to modify
   - request body:
  ```json
@@ -89,12 +91,55 @@
      "message": "page modified correctly"
   } 
   ```
-  - response body content for incorrect request:
+  - response bodies content for incorrect requests:
+    -for error about missing content or invalid date
   ```json
   {
-    "error": "the type of the content is not valid"
+    "error": "error description"
   }
   ```
+    -for validation error like title length or contents number
+  ```json
+  {
+    "errors": [
+        {
+            "type": "field",
+            "value": "a",
+            "msg": "Invalid value",
+            "path": "id",
+            "location": "params"
+        }
+    ]
+  }
+  ```
+ -for error about operation on the page not valid(like a not admin user who attempts to modify a page of another user)
+  ```json
+  {
+    "error": "user not authorized to perform this operation"
+  }
+  ```
+
+- DELETE `/page/:id` (api to delete an existing page)
+  content-type: application/json
+  - request parameters: id of the page to delete
+  - request body: none
+  - response body content for correct request:
+  ```json
+  {
+    "msg": "page correctly eliminated"
+  }
+  ```
+  - response body content for id not present:
+  ```json
+  {
+    "error": "page not present in the db"
+  }
+  ```
+  -for error about operation on the page not valid(like a not admin user who attempts to delete a page of another user)
+  ```json
+  {
+    "error": "user not authorized to perform this operation"
+  }
 
 ### Not Authenitcated API
 
@@ -119,6 +164,8 @@
   - response body content for wrong credentials:
     status 401, Unauthorized
 - GET `/page/all` (api to retrieve all the pages available)
+- in the case of an authenitcated user it returns all the pages
+- in the case of a non authenitcated user it returns only the published pages
   
   content-type: application/json
   
@@ -184,8 +231,8 @@
     status 500
     ```json
     {
-      error: "an error occurred",
-      content: "error description"
+      "error" : "an error occurred",
+      "content" : "error description"
     }
     ```
 ## Database Tables
