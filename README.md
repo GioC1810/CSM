@@ -300,27 +300,50 @@
   ```
 ## Database Tables
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+- Table `USERS` - contains the fields: id, username, password (encrypted), salt, nickname, role
+- Table `PAGES` - contains the fields: author, creationDate, publicationDate, title, id
+  - the 'author' field has a key reference with the username field of the `USERS` table 
+- Table `BLOCKS` - contains the fields: id, page, type, content, position
+  - the 'page' field has a key reference with the id field of the `PAGES` table
+  - in the case of an image type, the content contains the name of the image like "mare.jpg"
+- Table `WEB_SITE_NAME` - contains the fields: id, name
+  - the table has only one row for memorize the name of the website
 
 # Client side
 
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
-- ...
+### Routes not requiring authenitcation
+- Route `/`: contains the HomePageComponent, has the purpose to welcome the user and make him choose between 2 different options. It displays 2 buttons to navigate in different sections: to the front office or, depending if the user is authenitcated or not, to the login or the back office page
+- Route `/front`: contains the PagesListComponent that display all the published pages and has the purpose of representing the fron office
+- Route `/login`: contains the LoginComponent that has the purpose to login the user
+representing the fron office
+
+### Routes requiring authenitcation
+#### If a user try to access this protected routes without authenitcation, it is been redirect to the NotAuthorizedComponent
+- Route `/logout`: contains the LogoutComponent that has the purpose to logout the user
+- Route `/back/pages`: contains the PagesListComponent that display all the pages for authenitcated user and has the purpose of show and modify the pages
+- Route `/back/edit`: contains the EditPageComponent that has the purpose of create or modify a page
+- Route `*`: contains the NotFoundComponent that has the purpose to alert the user that the route he searched did not exist and shows 2 buttons to navigate in different sections: to the front office or, depending if the user is authenitcated or not, to the login or the back office page
 
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
-- ...
-
-(only _main_ components, minor ones may be skipped)
+- `HomePageComponent` (in `/componets/HomePageComponent.jsx`): has the purpose to welcome the user and give to it the possibiity of navigate to the front office and, depending if it is already authenitcated or not, to the login page or back-office page with the list of all pages
+- `PagesListComponent` (in `/componets/PagesListComponent.jsx`): it is a parametric component:
+  - if it is accessed from the '/front' route, it show only the list of the published page, instead if it is access from the protected '/back/pages' route, it show all the pages for the authenticated user
+- `LoginComponent` (in `/componets/LoginComponent.jsx`): it has the purpose to authenitcate a user, it consists of a form with 2 fields, a username and a password, and in case of succesfull authentication, it redirect the user. to the '/back/pages' route
+- `LogoutComponent` (in `/componets/LogoutComponent.jsx`): it has the purpose to logout a user, it is a component that when accessed show a modal that ask if the user is sure of make a logout. If the user click confirm, it redirect the user to the login page, on the other case, it redirect the user to the previous page
+- `EditPageComponent` (in `/componets/EditPageComponent.jsx`): it is a parametric component:
+  - if it receives as location state data a page, it display the page and allow the user to edit it, modifying title, author in case of admin user, add or remove content, and change the order of them
+  - if it not receives a page, it just show an empty form without inizialization of the field and allow a user to create a new page
+- `PageComponent` (in `/componets/PageComponent.jsx`): it has the purpose of show a single page with its content and depending on the user, if it is authenticated or not and if it is admin or not, show also some buttons to edit or delete the page
+- `NavigationBar` (in `/componets/NavigationBar.jsx`): it represent the navbar of the site and has the purpose of show some navigation options
+  - if the user is not authenticated, it show the link to the login and the link to the fron office
+  - if the user is authenticated but not admin it show also the links to create a new page and to the back office and instead of the login link, the logout link
+  - if the user is also an admin one, it also give the possibility to modify the site name
+    
 
 # Usage info
 
