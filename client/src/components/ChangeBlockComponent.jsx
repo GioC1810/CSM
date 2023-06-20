@@ -1,9 +1,4 @@
-import { Container, Button, Row, Col, Form, Image } from "react-bootstrap";
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import { useLocation, Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import ImageSelectorComponent from "./ImageSelectorComponent";
+import { Button, Row, Col, Form, Image } from "react-bootstrap";
 import BlockComponent from "./BlockComponent";
 import { Droppable, Draggable, DragDropContext } from "@hello-pangea/dnd";
 import API from "../API";

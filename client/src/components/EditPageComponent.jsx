@@ -17,14 +17,14 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   //page attributes states
   const [title, setTitle] = useState(page ? page.title : "");
   const [publicationDate, setPublicationDate] = useState(
-    page
+    (page && page.publicationDate)
       ? dayjs(page.publicationDate).format("YYYY-MM-DD")
-      : dayjs().format("YYYY-MM-DD")
+      : ''
   );
   const creationDate = page
     ? dayjs(page.creationDate).format("YYYY-MM-DD")
     : dayjs().format("YYYY-MM-DD");
-  const [author, setAuthor] = useState(page ? page.author : null);
+  const [author, setAuthor] = useState(page?.author ? page.author : user.username);
   const [contentList, setContentList] = useState(
     page ? [...page.contents] : []
   );
@@ -33,22 +33,26 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   const [lastId, setLastId] = useState(0);
 
   const handlePublicationDate = (e) => {
-    const newPubDate = dayjs(e.target.value);
-    if (newPubDate.isBefore(dayjs(creationDate))) {
+    const newPubDate = e.target.value ? dayjs(e.target.value) : '';
+    if (newPubDate && newPubDate.isBefore(dayjs(creationDate))) {
       setErrMsg("The publication date can't be before the creation date");
     } else {
-      setPublicationDate(newPubDate.format("YYYY-MM-DD"));
+      newPubDate
+        ? setPublicationDate(newPubDate.format("YYYY-MM-DD"))
+        : setPublicationDate(null);
     }
   };
 
   useEffect(() => {
     if (contentList.length > 0) {
-      const maxId = contentList.reduce((v1, v2) => (v1.id > v2.id ? v1 : v2)).id;
+      const maxId = contentList.reduce((v1, v2) =>
+        v1.id > v2.id ? v1 : v2
+      ).id;
       setLastId(maxId + 1);
     } else {
       setLastId(0);
     }
-  }, [contentList])
+  }, [contentList]);
 
   useEffect(() => {
     const retrieveUsers = async () => {
@@ -57,13 +61,13 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
         setErrMsg(result.error);
       } else {
         setUsers(result);
-        if(!author){
-          setAuthor(users[0])
+        if (!author) {
+          setAuthor(user.username);
         }
       }
     };
     retrieveUsers();
-    setOffice("back-office")
+    setOffice("back-office");
   }, []);
 
   const handleSubmit = async (e) => {
@@ -87,14 +91,14 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
     } else {
       let result;
       let p = {
-          title: title,
-          author: author ? author : users[0],
-          creationDate: creationDate,
-          publicationDate: publicationDate,
-          contents: contentList,
-      }
-      if(editing){
-        p.id = page.id
+        title: title,
+        author: author ? author : user.username,
+        creationDate: creationDate,
+        publicationDate: publicationDate ? publicationDate : null,
+        contents: contentList,
+      };
+      if (editing) {
+        p.id = page.id;
         result = await API.modifyPage(p);
       } else {
         result = await API.addPage(p);
@@ -126,10 +130,11 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
               required
             />
             <Form.Label>
-              {user.role === "admin" && page && "Original "}Author{" "}
-              {page ? ": " + page.author : ""}
+              {user.role === "admin" ? `Original author: ${page.author}` : "Author"}
             </Form.Label>
-            <Form.Select
+            <Form.Control
+              as="select"
+              value={page ? page.author : user.username}
               disabled={user.role !== "admin"}
               onChange={(e) => {
                 setAuthor(e.target.value);
@@ -137,12 +142,12 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             >
               {users.map((username) => {
                 return (
-                  <option key={username} selected={username === author}>
+                  <option key={username}>
                     {username}
                   </option>
                 );
               })}
-            </Form.Select>
+            </Form.Control>
             <Form.Label>Creation Date</Form.Label>
             <Form.Control type="date" value={creationDate} disabled />
             <Form.Label>PublicationDate</Form.Label>

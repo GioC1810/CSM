@@ -83,7 +83,7 @@ exports.getPages = () => {
   });
 };
 
-exports.getPagesByAuthorId = (id) => {
+exports.getPagesByAuthor = (id) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM PAGES WHERE AUTHOR = ?";
     db.all(sql, [id], (err, rows) => {
@@ -133,7 +133,7 @@ exports.getBlockByPagesId = (id) => {
 
 exports.getWebSiteName = () => {
   return new Promise((resolve, reject) => {
-    const sql = "SELECT name FROM WEB_INFO WHERE id = 1";
+    const sql = "SELECT name FROM WEB_SITE_NAME WHERE id = 1";
     db.get(sql, (err, row) => {
       if (err) reject(err);
       resolve(row.name);
@@ -143,10 +143,11 @@ exports.getWebSiteName = () => {
 
 exports.modifyWebSiteName = (name) => {
   return new Promise((resolve, reject) => {
-    const sql = "UPDATE WEB_INFO SET name=? WHERE ID = 1";
-    db.get(sql, [name], (err) => {
+    const sql = "UPDATE WEB_SITE_NAME SET name=? WHERE ID = 1";
+    db.run(sql, [name], (err) => {
+      console.log(err)
       if (err) reject(err);
-      resolve({ error: "No update" });
+      resolve();
     });
   });
 };
@@ -243,6 +244,19 @@ exports.deleteBlocks = (pageId) => {
     db.run(sql, [pageId], (err) => {
       if (err) reject(err);
       resolve();
+    });
+  });
+};
+
+exports.getPagesId = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT id FROM PAGES";
+    db.all(sql, (err, rows) => {
+      console.log(err)
+      if (err) reject(err);
+      console.log(rows)
+      const idlist = rows.map((row) => row.id);
+      resolve(idlist);
     });
   });
 };

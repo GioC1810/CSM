@@ -9,6 +9,8 @@ import NotAuthorizedComponent from "./components/NotAuthorizedComponent";
 import LogoutComponent from "./components/LogoutComponent";
 import PagesListComponent from "./components/PagesListComponent";
 import EditPageComponent from "./components/EditPageComponent";
+import NotFoundComponent from "./components/NotFoundComponent";
+import HomePageComponent from "./components/HomePageComponent"
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -20,12 +22,11 @@ function App() {
 
   useEffect(() => {
     const checkSesssion = async () => {
-      const result = await API.getUserInfo();
+      const result = await API.checkSession();
       if (!result.error) {
         setUser(result);
       } else {
         setUser({});
-        navigate("/login");
       }
     };
     checkSesssion();
@@ -50,7 +51,7 @@ function App() {
         <Route
           path="/"
           element={
-            <LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice} />
+            <HomePageComponent />
           }
         />
         //Front office
@@ -78,15 +79,16 @@ function App() {
           }
         />
         <Route
-          path="/back/edit/"
+          path="/back/edit"
           element={
             user ? (
-              <EditPageComponent setErrMsg={setErrMsg} setOffice={setOffice}/>
+              <EditPageComponent setErrMsg={setErrMsg} setOffice={setOffice} />
             ) : (
               <NotAuthorizedComponent />
             )
           }
         />
+        <Route path="*" element={<NotFoundComponent />} />
       </Routes>
 
       <Toast

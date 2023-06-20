@@ -43,7 +43,7 @@ const NavigationBar = (props) => {
       setErrMsg(result.error);
     } else {
       setSiteName(modifiedSiteName);
-      setModifiedSiteName("");
+      setModifiedSiteName(modifiedSiteName);
     }
     setChangeSiteName(false);
   };
@@ -70,36 +70,21 @@ const NavigationBar = (props) => {
             )}
           </Navbar.Brand>
           <Navbar.Brand style={{ color: "red" }}>
-            {user ? (props.office ? props.office : "") : ""}
+            {user ? (props.office ? props.office : "") : "front-office"}
           </Navbar.Brand>
         </div>
         <Nav>
           <NavDropdown title="Navigate" id="nav-dropdown">
-            <NavDropdown.Item>
-              <Link
-                to="/front"
-                style={{ textDecoration: "none", color: "#455d7a" }}
-              >
-                Front office
-              </Link>
+            <NavDropdown.Item onClick={() => navigate("/front")}>
+              Front office
             </NavDropdown.Item>
             {user?.username && (
               <>
-                <NavDropdown.Item>
-                  <Link
-                    to="/back/pages"
-                    style={{ textDecoration: "none", color: "#455d7a" }}
-                  >
-                    Back office
-                  </Link>
+                <NavDropdown.Item onClick={() => navigate("/back/pages")}>
+                  Back office
                 </NavDropdown.Item>
-                <NavDropdown.Item>
-                  <Link
-                    to="/back/edit"
-                    style={{ textDecoration: "none", color: "#455d7a" }}
-                  >
-                    Create new page
-                  </Link>
+                <NavDropdown.Item onClick={() => navigate("/back/edit")}>
+                  Create new page
                 </NavDropdown.Item>
               </>
             )}

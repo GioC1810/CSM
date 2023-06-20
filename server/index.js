@@ -120,7 +120,13 @@ app.get("/page/all", async (req, res) => {
         return 0;
       }
     });
-    res.status(200).json(pagesWithBlock);
+    if (req.isAuthenticated()) {
+      res.status(200).json(pagesWithBlock);
+    } else {
+      res
+        .status(200)
+        .json(pagesWithBlock.filter((p) => p.type === "published"));
+    }
   } catch (err) {
     res.status(500).json({ error: "an error occurred", content: err });
   }
@@ -137,15 +143,19 @@ app.put(
   "/site-name",
   [check("siteName").isLength({ min: 1, max: 50 })],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
-    }
-    try {
-      await db_API.modifyWebSiteName(req.body.siteName);
-      res.status(200).json({ message: "site name change correctly" });
-    } catch (err) {
-      res.status(400).json({ error: "db error" });
+    if (req.user.role !== "admin") {
+      res.status(400).json({error: "user not authorized to perform this action"})
+    } else {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json(errors);
+      }
+      try {
+        await db_API.modifyWebSiteName(req.body.siteName);
+        res.status(200).json({ message: "site name change correctly" });
+      } catch (err) {
+        res.status(400).json({ error: "db error" });
+      }
     }
   }
 );
@@ -163,18 +173,10 @@ app.get("/users", (req, res) => {
     );
 });
 
-app.get("/response", (req, res) => {
-  res.json("hello, you are authenitcated");
-});
-
-app.get("/admin", requireAdminRole(), (req, res) => {
-  res.json("you are an admin role");
-});
-
 app.get("/page/author", async (req, res) => {
   if (req.query.user) {
     try {
-      const pages = await db_API.getPagesByAuthorId(req.query.user);
+      const pages = await db_API.getPagesByAuthor(req.query.user);
       pages.sort((p1, p2) => {
         if (p1.publicationDate && p2.publicationDate) {
           return p1.publicationDate.diff(p2.publicationDate);
@@ -204,65 +206,71 @@ app.post(
     check("contents.length").isInt({ min: 2 }),
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
-    }
-    //check sulle date
-    const creationDate = req.body.creationDate;
-    if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
-      return res
-        .status(422)
-        .json({ error: "the creation date is in a wrong format" });
-    }
-    const publicationDate = req.body.publicationDate;
-
-    if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
-      return res
-        .status(422)
-        .json({ error: "the publication date is in a wrong format" });
-    }
-    //check sulla validità dei contenuti
-    //si verifica che il tipo sia o header, o image o paragraph
-    //e che nel caso sia image, l'immagine sia di una di quelle valide
-    //e che l'header sia presente
-    let contentTypeIsValid = true;
-    let headerPresent = false;
-
-    req.body.contents.forEach((block) => {
-      if (
-        !contentsType.includes(block.type) ||
-        (block.type == "image" && !images.includes(block.content))
-      ) {
-        contentTypeIsValid = false;
-        return;
-      }
-      if (block.type == "header") {
-        headerPresent = true;
-      }
-    });
-
-    if (!contentTypeIsValid || !headerPresent) {
-      return res
-        .status(422)
-        .json({ error: "the type of the content is not valid" });
-    }
-
-    const new_page = {
-      title: req.body.title,
-      author: req.body.author,
-      creationDate: req.body.creationDate,
-      publicationDate: req.body.publicationDate,
-    };
-    try {
-      await db_API.addPage(new_page);
-      const lastId = await db_API.getLastId();
-      await db_API.addBlocks(lastId, req.body.contents);
+    if (req.body.author !== req.user.username && req.user.role !== "admin") {
       res
-        .status(200)
-        .json({ message: "page inserted correctly with its content" });
-    } catch (err) {
-      res.status(500).json({ error: "an error occurred", content: err });
+        .status(400)
+        .json({ error: "user not authorized to perform this operation" });
+    } else {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json(errors);
+      }
+      //check sulle date
+      const creationDate = req.body.creationDate;
+      if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
+        return res
+          .status(422)
+          .json({ error: "the creation date is in a wrong format" });
+      }
+      const publicationDate = req.body.publicationDate;
+
+      if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
+        return res
+          .status(422)
+          .json({ error: "the publication date is in a wrong format" });
+      }
+      //check sulla validità dei contenuti
+      //si verifica che il tipo sia o header, o image o paragraph
+      //e che nel caso sia image, l'immagine sia di una di quelle valide
+      //e che l'header sia presente
+      let contentTypeIsValid = true;
+      let headerPresent = false;
+
+      req.body.contents.forEach((block) => {
+        if (
+          !contentsType.includes(block.type) ||
+          (block.type == "image" && !images.includes(block.content))
+        ) {
+          contentTypeIsValid = false;
+          return;
+        }
+        if (block.type == "header") {
+          headerPresent = true;
+        }
+      });
+
+      if (!contentTypeIsValid || !headerPresent) {
+        return res
+          .status(422)
+          .json({ error: "the type of the content is not valid" });
+      }
+
+      const new_page = {
+        title: req.body.title,
+        author: req.body.author,
+        creationDate: req.body.creationDate,
+        publicationDate: req.body.publicationDate,
+      };
+      try {
+        await db_API.addPage(new_page);
+        const lastId = await db_API.getLastId();
+        await db_API.addBlocks(lastId, req.body.contents);
+        res
+          .status(200)
+          .json({ message: "page inserted correctly with its content" });
+      } catch (err) {
+        res.status(500).json({ error: "an error occurred", content: err });
+      }
     }
   }
 );
@@ -276,91 +284,120 @@ app.put(
     check("contents.length").isInt({ min: 2 }),
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
-    }
-    //check sulle date
-    const creationDate = req.body.creationDate;
-    if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
-      return res
-        .status(422)
-        .json({ error: "the creation date is in a wrong format" });
-    }
-    const publicationDate = req.body.publicationDate;
-
-    if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
-      return res
-        .status(422)
-        .json({ error: "the publication date is in a wrong format" });
-    }
-    //check sulla validità dei contenuti
-    //si verifica che il tipo sia o header, o image o paragraph
-    //e che nel caso sia image, l'immagine sia di una di quelle valide
-    //e che l'header sia presente
-    let contentTypeIsValid = true;
-    let headerPresent = false;
-
-    req.body.contents.forEach((block) => {
-      if (
-        !contentsType.includes(block.type) ||
-        (block.type == "image" && !images.includes(block.content))
-      ) {
-        contentTypeIsValid = false;
-        return;
-      }
-      if (block.type == "header") {
-        headerPresent = true;
-      }
-    });
-
-    if (!contentTypeIsValid || !headerPresent) {
-      return res
-        .status(422)
-        .json({ error: "the type of the content is not valid" });
-    }
-
-    const page = {
-      id: req.params.id,
-      title: req.body.title,
-      author: req.body.author,
-      publicationDate: req.body.publicationDate,
-    };
-    try {
-      if (req.user.role === "admin") {
-        await db_API.updatePageAdminMode(page);
-      } else {
-        await db_API.updatePage(page);
-      }
-
-      await db_API.deleteBlocks(page.id);
-      await db_API.addBlocks(page.id, req.body.contents);
+    const pages = await db_API.getPagesByAuthor(req.user.username);
+    const pageToDelete =
+      pages.length > 0
+        ? pages.filter((p) => p.id === parseInt(req.params.id))[0]
+        : null;
+    if (
+      (!pageToDelete && req.user.role !== "admin") ||
+      (req.user.role !== "admin" && pageToDelete.author !== req.user.username)
+    ) {
       res
-        .status(200)
-        .json({ message: "page inserted correctly with its content" });
-    } catch (err) {
-      res.status(500).json({ error: "an error occurred", content: err });
+        .status(400)
+        .json({ error: "user not authorized to perform this operation" });
+    } else {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json(errors);
+      }
+      //check sulle date
+      const creationDate = req.body.creationDate;
+      if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
+        return res
+          .status(422)
+          .json({ error: "the creation date is in a wrong format" });
+      }
+      const publicationDate = req.body.publicationDate;
+
+      if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
+        return res
+          .status(422)
+          .json({ error: "the publication date is in a wrong format" });
+      }
+
+      let contentTypeIsValid = true;
+      let headerPresent = false;
+
+      req.body.contents.forEach((block) => {
+        if (
+          !contentsType.includes(block.type) ||
+          (block.type == "image" && !images.includes(block.content))
+        ) {
+          contentTypeIsValid = false;
+          return;
+        }
+        if (block.type == "header") {
+          headerPresent = true;
+        }
+      });
+
+      if (!contentTypeIsValid || !headerPresent) {
+        return res
+          .status(422)
+          .json({ error: "the type of the content is not valid" });
+      }
+
+      const page = {
+        id: req.params.id,
+        title: req.body.title,
+        author: req.body.author,
+        publicationDate: req.body.publicationDate,
+      };
+      try {
+        if (req.user.role === "admin") {
+          await db_API.updatePageAdminMode(page);
+        } else {
+          await db_API.updatePage(page);
+        }
+
+        await db_API.deleteBlocks(page.id);
+        await db_API.addBlocks(page.id, req.body.contents);
+        res.status(200).json({ message: "page modified correctly" });
+      } catch (err) {
+        res.status(500).json({ error: "an error occurred", content: err });
+      }
     }
   }
 );
 
 app.delete("/page/:id", [check("id").isNumeric()], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json(errors);
-  }
-  try {
-    await db_API.deletePage(req.params.id);
-    await db_API.deleteBlocks(req.params.id);
-    res.status(200).json({ msg: "page correctly eliminated" });
-  } catch (err) {
-    res.status(500).json({ error: "the db is not available" });
+  console.log(req.user.username);
+  const pages = await db_API.getPagesByAuthor(req.user.username);
+  const pageToDelete =
+    pages.length > 0
+      ? pages.filter((p) => p.id === parseInt(req.params.id))[0]
+      : null;
+  if (
+    (!pageToDelete && req.user.role !== "admin") ||
+    (req.user.role !== "admin" && pageToDelete.author !== req.user.username)
+  ) {
+    res
+      .status(400)
+      .json({ error: "user not authorized to perform this operation" });
+  } else {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json(errors);
+    }
+    try {
+      const listId = await db_API.getPagesId();
+      if (!listId.includes(parseInt(req.params.id, 10))) {
+        res.status(404).json({ error: "page not present in the db" });
+      } else {
+        await db_API.deletePage(req.params.id);
+        await db_API.deleteBlocks(req.params.id);
+        res.status(200).json({ msg: "page correctly eliminated" });
+      }
+    } catch (err) {
+      res.status(500).json({ error: "the db is not available" });
+    }
   }
 });
 
 app.delete("/logout", (req, res) => {
   req.logout(() => {
-    res.end();
+    res.json({ result: "logout executed" }).end();
   });
 });
 

@@ -31,13 +31,14 @@ const getSiteName = async () => {
     const name = await getJson(fetch(SERVER_URL + "site-name"), {
       credentials: "include",
     });
+    console.log(name)
     return name;
   } catch (err) {
     return err;
   }
 };
 
-const getUserInfo = async () => {
+const checkSession = async () => {
   try {
     const user = await getJson(
       fetch(SERVER_URL + "session", { credentials: "include", mode: 'cors' })
@@ -176,5 +177,5 @@ const changeSiteName = async (name) => {
   }
 }
 
-const API = { getSiteName, logIn, getUserInfo, logout, getAllPages, getUsers, addPage, deletePage, modifyPage, changeSiteName };
+const API = { getSiteName, logIn, checkSession, logout, getAllPages, getUsers, addPage, deletePage, modifyPage, changeSiteName };
 export default API;

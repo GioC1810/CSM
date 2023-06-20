@@ -11,7 +11,6 @@ const BlockComponent = ({ content }) => {
     <Container>
       <Row className="justify-content-center mt-2 mb-3">
         <Col>
-          <h4>{content.type}</h4>
           {images.includes(content.content) ? (
             <Card style={{ width: "18rem" }}>
               {imageLoading && (
