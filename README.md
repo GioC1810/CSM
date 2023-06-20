@@ -92,13 +92,13 @@
   } 
   ```
   - response bodies content for incorrect requests:
-    -for error about missing content or invalid date
+  -for error about missing content or invalid date
   ```json
   {
     "error": "error description"
   }
   ```
-    -for validation error like title length or contents number
+  -for validation error like title length or contents number
   ```json
   {
     "errors": [
