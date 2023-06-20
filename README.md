@@ -22,8 +22,7 @@
     
 ### Not Authenitcated API
 
-- POST `/login` (api to perform the login)
------------------
+- POST `/login` (api to perform the login).
   content-type: application/json
   - request body content :
   {
