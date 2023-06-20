@@ -23,6 +23,7 @@
 ### Not Authenitcated API
 
 - POST `/login` (api to perform the login)
+-----------------
   content-type: application/json
   - request body content :
   {
@@ -37,7 +38,7 @@
   } 
   - response body content for wrong credentials:
     status 401, Unauthorized
-- GET `/page/all`
+- GET `/page/all` (api to retrieve all the pages available)
   content-type: application/json
   - request parameters and request body content: none
   - response body content :
