@@ -7,16 +7,98 @@
 
 ## API Server
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+### Authenitcated API
+
+- DELETE `/logout` (api to perform the logout from the session)
+  - request parameters: none
+  - response body content for authenitcated user:
+  {
+    "result": "logout executed"
+  } 
+  - response body content for non authenitcated user:
+  {
+    "error": "NOT AUTHENTICATED - GO AWAY"
+  }
+    
+### Not Authenitcated API
+
+- POST `/login` (api to perform the login)
+  content-type: application/json
+  - request body content :
+  {
+    "username" : "user1@gmail.com",
+    "password" : "password"
+  }
+  - response body content for correct credentials:
+  {
+    "username": "user1@gmail.com",
+    "role": "admin",
+    "nickname": "user1" 
+  } 
+  - response body content for wrong credentials:
+    status 401, Unauthorized
+- GET `/page/all`
+  content-type: application/json
+  - request parameters and request body content: none
+  - response body content :
+  [
+    {
+        "id": 4,
+        "title": "page4",
+        "author": "user4@gmail.com",
+        "creationDate": "2000-12-31T23:00:00.000Z",
+        "publicationDate": "2019-09-08T22:00:00.000Z",
+        "type": "published",
+        "contents": [
+            {
+                "id": 152,
+                "type": "header",
+                "content": "Et harum quidem rerum facilis est et expedita distinctio",
+                "position": 0
+            },
+            {
+                "id": 153,
+                "type": "image",
+                "content": "piramide.jpg",
+                "position": 1
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "page3",
+        "author": "user2@gmail.com",
+        "creationDate": "2022-01-04T23:00:00.000Z",
+        "publicationDate": "2022-09-22T22:00:00.000Z",
+        "type": "published",
+        "contents": [
+            {
+                "id": 76,
+                "type": "header",
+                "content": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga",
+                "position": 1
+            },
+            {
+                "id": 77,
+                "type": "image",
+                "content": "mare.jpg",
+                "position": 2
+            },
+            {
+                "id": 78,
+                "type": "image",
+                "content": "canoa.jpg",
+                "position": 3
+            }
+        ]
+    }
+  ] 
+  - response body content in case some errors occurs (typically db ERROR):
+    status 500
+    {
+      error: "an error occurred",
+      content: "error description"
+    }
 
 ## Database Tables
 
