@@ -142,6 +142,33 @@
     "error": "user not authorized to perform this operation"
   }
 
+  - PUT `/site-name` (api to modify the name of a site)
+  content-type: application/json
+  - request parameters: id of the page to delete
+  - request body: 
+  ```json
+  {
+    "siteName": "new name"
+  }
+  ```
+  - response body content for correct request:
+  ```json
+  {
+    "msg": "site name change correctly"
+  }
+  ```
+  - response body content for invalid request like a non admin user who try to modificate the name:
+  ```json
+  {
+    "error": "user not authorized to perform this action"
+  }
+  ```
+  -for db error
+  ```json
+  {
+    "error": "db error"
+  }
+  ```
 ### Not Authenitcated API
 
 - POST `/login` (api to perform the login)
@@ -236,6 +263,39 @@
       "content" : "error description"
     }
     ```
+  - GET `/users` (api to get all the users present)
+  content-type: application/json
+  - request parameters: none
+  - request body: none
+  - response body content for correct request:
+  ```json
+  [
+    "user1@gmail.com",
+    "user2@gmail.com",
+    "user3@gmail.com",
+    "user4@gmail.com"
+  ]
+  ```
+  -for db error
+  ```json
+  {
+    "error": "errror in retrieving the users"
+  }
+  ```
+  - GET `/site-name` (api to get the name of the site)
+  content-type: application/json
+  - request parameters: none
+  - request body: none
+  - response body content for correct request:
+  ```json
+  "Content Management System"
+  ```
+  -for db error
+  ```json
+  {
+    "error" : "Cannot connect to db"
+  }
+  ```
 ## Database Tables
 
 - Table `users` - contains xx yy zz
