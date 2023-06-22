@@ -17,14 +17,16 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   //page attributes states
   const [title, setTitle] = useState(page ? page.title : "");
   const [publicationDate, setPublicationDate] = useState(
-    (page && page.publicationDate)
+    page && page.publicationDate
       ? dayjs(page.publicationDate).format("YYYY-MM-DD")
-      : ''
+      : ""
   );
   const creationDate = page
     ? dayjs(page.creationDate).format("YYYY-MM-DD")
     : dayjs().format("YYYY-MM-DD");
-  const [author, setAuthor] = useState(page?.author ? page.author : user.username);
+  const [author, setAuthor] = useState(
+    page?.author ? page.author : user.username
+  );
   const [contentList, setContentList] = useState(
     page ? [...page.contents] : []
   );
@@ -33,7 +35,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   const [lastId, setLastId] = useState(0);
 
   const handlePublicationDate = (e) => {
-    const newPubDate = e.target.value ? dayjs(e.target.value) : '';
+    const newPubDate = e.target.value ? dayjs(e.target.value) : "";
     if (newPubDate && newPubDate.isBefore(dayjs(creationDate))) {
       setErrMsg("The publication date can't be before the creation date");
     } else {
@@ -97,6 +99,10 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
         publicationDate: publicationDate ? publicationDate : null,
         contents: contentList,
       };
+      if (p.title.length > 20) {
+        setErrMsg("the max length for the title is 20 characters!");
+        return;
+      }
       if (editing) {
         p.id = page.id;
         result = await API.modifyPage(p);
@@ -130,22 +136,22 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
               required
             />
             <Form.Label>
-              {user.role === "admin" ? `Original author: ${page.author}` : "Author"}
+              {page
+                ? user?.role === "admin"
+                  ? `Original author: ${page.author}`
+                  : "Author"
+                : "Author"}
             </Form.Label>
             <Form.Control
               as="select"
-              value={page ? page.author : user.username}
+              value={author}
               disabled={user.role !== "admin"}
               onChange={(e) => {
                 setAuthor(e.target.value);
               }}
             >
               {users.map((username) => {
-                return (
-                  <option key={username}>
-                    {username}
-                  </option>
-                );
+                return <option key={username}>{username}</option>;
               })}
             </Form.Control>
             <Form.Label>Creation Date</Form.Label>
@@ -167,7 +173,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             />
           )}
           <Button
-            style={{background: "#0093AF"}}
+            style={{ background: "#0093AF" }}
             onClick={() => setShowContentForm(!showContentForm)}
           >
             {showContentForm ? "Close" : "Add block"}
@@ -177,7 +183,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             setContentList={setContentList}
             handleContentDelete={handleContentDelete}
           />
-          <Button style={{background: "#0071c5"}} type="submit">
+          <Button style={{ background: "#0071c5" }} type="submit">
             Add page
           </Button>
         </Form>

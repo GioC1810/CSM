@@ -150,7 +150,7 @@ app.put(
     } else {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(422).json(errors);
+        return res.status(422).json({error: "title length too long"});
       }
       try {
         await db_API.modifyWebSiteName(req.body.siteName);

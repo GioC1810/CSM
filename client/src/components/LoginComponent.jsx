@@ -1,5 +1,5 @@
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../API";
 import useAuth from "../hooks/useAuth";
@@ -61,10 +61,10 @@ const LoginComponent = (props) => {
                     </Button>
                   </Col>
                   <Col className="d-flex justify-content-center">
-                    <Button variant="info">
+                    <Button variant="info" style={{background: "#0066b2"}}>
                       <Link
                         to="/front"
-                        style={{ textDecoration: "none", color: "#455d7a" }}
+                        style={{ textDecoration: "none", color: "white" }}
                       >
                         Go to front office
                       </Link>

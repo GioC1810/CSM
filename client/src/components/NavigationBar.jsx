@@ -40,7 +40,7 @@ const NavigationBar = (props) => {
     e.preventDefault();
     const result = await API.changeSiteName(modifiedSiteName);
     if (result.error) {
-      setErrMsg(result.error);
+      props.setErrMsg(result.error);
     } else {
       setSiteName(modifiedSiteName);
       setModifiedSiteName(modifiedSiteName);

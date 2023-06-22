@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import useAuth from "./hooks/useAuth";
 import { Container, Toast } from "react-bootstrap";
 import API from "./API.js";
@@ -10,7 +10,7 @@ import LogoutComponent from "./components/LogoutComponent";
 import PagesListComponent from "./components/PagesListComponent";
 import EditPageComponent from "./components/EditPageComponent";
 import NotFoundComponent from "./components/NotFoundComponent";
-import HomePageComponent from "./components/HomePageComponent"
+import HomePageComponent from "./components/HomePageComponent";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -39,21 +39,24 @@ function App() {
   };
 
   return (
-    <Container fluid  style={{background: "#4682B4", minHeight: "100vh"}}>
-      <NavigationBar logout={handleLogout} user={user} office={office} />
+    <Container fluid style={{ background: "#F0F8FF", minHeight: "100vh" }}>
+      <NavigationBar
+        logout={handleLogout}
+        office={office}
+        setErrMsg={setErrMsg}
+      />
       <Routes>
         <Route
           path="/login"
           element={
-            <LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice} />
+            !user?.username ? (
+              <LoginComponent setErrorMsg={setErrMsg} setOffice={setOffice} />
+            ) : (
+              <Navigate replace to="/back/pages" />
+            )
           }
         />
-        <Route
-          path="/"
-          element={
-            <HomePageComponent />
-          }
-        />
+        <Route path="/" element={<HomePageComponent />} />
         //Front office
         <Route
           path="/front"
@@ -65,7 +68,11 @@ function App() {
         <Route
           path="/logout"
           element={
-            <LogoutComponent logout={handleLogout} setOffice={setOffice} />
+            user?.username ? (
+              <LogoutComponent logout={handleLogout} setOffice={setOffice} />
+            ) : (
+              <NotAuthorizedComponent />
+            )
           }
         ></Route>
         <Route
