@@ -39,7 +39,7 @@ function App() {
   };
 
   return (
-    <Container fluid>
+    <Container fluid  style={{background: "#4682B4", minHeight: "100vh"}}>
       <NavigationBar logout={handleLogout} user={user} office={office} />
       <Routes>
         <Route

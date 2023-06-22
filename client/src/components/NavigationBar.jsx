@@ -49,7 +49,7 @@ const NavigationBar = (props) => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar style={{background: "#002D62"}} variant="dark">
       <Container>
         <BsDisplay style={{ color: "white" }} size={30} />
         <div

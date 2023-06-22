@@ -139,6 +139,8 @@ app.get("/site-name", (req, res) => {
     .catch((err) => res.status(500).json({ error: "Cannot connect to db" }));
 });
 
+app.use(isLogged);
+
 app.put(
   "/site-name",
   [check("siteName").isLength({ min: 1, max: 50 })],
@@ -159,8 +161,6 @@ app.put(
     }
   }
 );
-
-app.use(isLogged);
 
 app.get("/users", (req, res) => {
   db_API

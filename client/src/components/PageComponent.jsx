@@ -57,7 +57,7 @@ const PageComponent = ({ page, logged, setPages, pages }) => {
             logged && (
               <Container className="d-flex justify-content-between">
                 <Button
-                  variant="warning"
+                  style={{background: "#005A9C"}}
                   size="sm"
                   onClick={() => navigate("/back/edit", { state: page })}
                 >

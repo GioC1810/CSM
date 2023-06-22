@@ -167,7 +167,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             />
           )}
           <Button
-            variant="success"
+            style={{background: "#0093AF"}}
             onClick={() => setShowContentForm(!showContentForm)}
           >
             {showContentForm ? "Close" : "Add block"}
@@ -177,7 +177,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             setContentList={setContentList}
             handleContentDelete={handleContentDelete}
           />
-          <Button variant="info" type="submit">
+          <Button style={{background: "#0071c5"}} type="submit">
             Add page
           </Button>
         </Form>

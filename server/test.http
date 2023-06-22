@@ -1,0 +1,88 @@
+##Perform login
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "user1@gmail.com",
+    "password": "pdfg456ty2"
+}
+###
+
+##check if the user is logged in
+GET http://localhost:3000/session HTTP/1.1
+Content-Type: application/json
+###
+
+GET http://localhost:3000/page/all HTTP/1.1
+Content-Type: application/json
+###
+
+GET http://localhost:3000/site-name HTTP/1.1
+Content-Type: application/json
+###
+
+GET http://localhost:3000/users HTTP/1.1
+Content-Type: application/json
+###
+
+POST http://localhost:3000/page/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "title" : "cc saqs ccff",
+    "author" : "user1@gmail.com",
+    "creationDate" : "01/01/2011",
+    "publicationDate" : "",
+    "contents" : [
+        {
+            "type": "header",
+            "content": "prova header",
+            "position" : 1
+        },
+        {
+            "type": "image",
+            "content": "piramide.jpg",
+            "position" : 2
+        } 
+    ]
+}
+###
+
+PUT http://localhost:3000/page/49 HTTP/1.1
+Content-Type: application/json
+
+{
+    "title" : "cc saqs ccff",
+    "author" : "user1@gmail.com",
+    "creationDate" : "01/01/2011",
+    "publicationDate" : "",
+    "contents" : [
+        {
+            "type": "header",
+            "content": "prova header",
+            "position" : 1
+        },
+        {
+            "type": "image",
+            "content": "piramide.jpg",
+            "position" : 2
+        } 
+    ]
+}
+###
+
+PUT http://localhost:3000/site-name HTTP/1.1
+Content-Type: application/json
+
+{
+    "siteName" : "Content Management System"
+}
+###
+
+DELETE  http://localhost:3000/page/49 HTTP/1.1
+Content-Type: application/json
+###
+
+DELETE  http://localhost:3000/logout HTTP/1.1
+Content-Type: application/json
+###

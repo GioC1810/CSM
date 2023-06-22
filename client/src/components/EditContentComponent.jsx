@@ -51,7 +51,7 @@ const EditContentComponent = ({setErrMsg, contents, setContentList, lastId }) =>
             ></Form.Control>
           </>
         )}
-        <Button variant="primary" onClick={handleContentSubmit}>
+        <Button style={{background: "#004170"}} onClick={handleContentSubmit}>
           Add content
         </Button>
       </Form.Group>
