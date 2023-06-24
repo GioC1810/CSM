@@ -10,8 +10,7 @@ import API from "../API";
 const EditPageComponent = ({ setErrMsg, setOffice }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const page = location.state;
-  const editing = page ? true : false;
+  let page = location.state;
   const { user } = useAuth();
   const [showContentForm, setShowContentForm] = useState(false);
   //page attributes states
@@ -21,7 +20,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
       ? dayjs(page.publicationDate).format("YYYY-MM-DD")
       : ""
   );
-  const creationDate = page
+  let creationDate = page
     ? dayjs(page.creationDate).format("YYYY-MM-DD")
     : dayjs().format("YYYY-MM-DD");
   const [author, setAuthor] = useState(
@@ -72,6 +71,17 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
     setOffice("back-office");
   }, []);
 
+  useEffect(() => {
+    if(location.pathname === "/back/new"){
+      setShowContentForm(false);
+      setTitle('');
+      setAuthor(user.username)
+      setPublicationDate('');
+      creationDate = dayjs().format("YYYY-MM-DD");
+      setContentList([]);
+    }
+  }, [location.pathname])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let noHeader = true;
@@ -103,7 +113,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
         setErrMsg("the max length for the title is 20 characters!");
         return;
       }
-      if (editing) {
+      if (page) {
         p.id = page.id;
         result = await API.modifyPage(p);
       } else {
@@ -176,7 +186,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             style={{ background: "#0093AF" }}
             onClick={() => setShowContentForm(!showContentForm)}
           >
-            {showContentForm ? "Close" : "Add block"}
+            {showContentForm ? "Close" : "Add content"}
           </Button>
           <ChangeBlockComponent
             contentList={contentList}

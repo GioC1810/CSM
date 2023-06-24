@@ -59,7 +59,7 @@ const PageComponent = ({ page, logged, setPages, pages }) => {
                 <Button
                   style={{background: "#005A9C"}}
                   size="sm"
-                  onClick={() => navigate("/back/edit", { state: page })}
+                  onClick={() => navigate(`/back/edit/${page.id}`, { state: page })}
                 >
                   Edit page
                 </Button>

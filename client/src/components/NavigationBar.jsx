@@ -83,7 +83,7 @@ const NavigationBar = (props) => {
                 <NavDropdown.Item onClick={() => navigate("/back/pages")}>
                   Back office
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => navigate("/back/edit")}>
+                <NavDropdown.Item onClick={() => navigate("/back/new")}>
                   Create new page
                 </NavDropdown.Item>
               </>

@@ -324,7 +324,8 @@ representing the fron office
 #### If a user try to access this protected routes without authenitcation, it is been redirect to the NotAuthorizedComponent
 - Route `/logout`: contains the LogoutComponent that has the purpose to logout the user
 - Route `/back/pages`: contains the PagesListComponent that display all the pages for authenitcated user and has the purpose of show and modify the pages
-- Route `/back/edit`: contains the EditPageComponent that has the purpose of create or modify a page
+- Route `/back/edit/:id`: contains the EditPageComponent that has the purpose of modify a page
+- Route `/back/new`: contains the EditPageComponent that has the purpose of create a page
 - Route `*`: contains the NotFoundComponent that has the purpose to alert the user that the route he searched did not exist and shows 2 buttons to navigate in different sections: to the front office or, depending if the user is authenitcated or not, to the login or the back office page
 
 
@@ -336,8 +337,8 @@ representing the fron office
 - `LoginComponent` (in `/componets/LoginComponent.jsx`): it has the purpose to authenitcate a user, it consists of a form with 2 fields, a username and a password, and in case of succesfull authentication, it redirect the user. to the '/back/pages' route
 - `LogoutComponent` (in `/componets/LogoutComponent.jsx`): it has the purpose to logout a user, it is a component that when accessed show a modal that ask if the user is sure of make a logout. If the user click confirm, it redirect the user to the login page, on the other case, it redirect the user to the previous page
 - `EditPageComponent` (in `/componets/EditPageComponent.jsx`): it is a parametric component:
-  - if it receives as location state data a page, it display the page and allow the user to edit it, modifying title, author in case of admin user, add or remove content, and change the order of them
-  - if it not receives a page, it just show an empty form without inizialization of the field and allow a user to create a new page
+  - if it receives as location state data a page and stands in the route "/back/edit/:id", it display the page and allow the user to edit it, modifying title, author in case of admin user, add or remove content, and change the order of them
+  - if it not receives a page and it is in the route "/back/new", it just show an empty form and allow a user to create a new page
 - `PageComponent` (in `/componets/PageComponent.jsx`): it has the purpose of show a single page with its content and depending on the user, if it is authenticated or not and if it is admin or not, show also some buttons to edit or delete the page
 - `NavigationBar` (in `/componets/NavigationBar.jsx`): it represent the navbar of the site and has the purpose of show some navigation options
   - if the user is not authenticated, it show the link to the login and the link to the fron office

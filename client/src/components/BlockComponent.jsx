@@ -4,7 +4,7 @@ import "dayjs";
 
 const BlockComponent = ({ content }) => {
   const images = ["canoa.jpg", "mare.jpg", "paesaggio.jpg", "piramide.jpg"];
-  const path_to_image = `../../public/${content.content}`;
+  const path_to_image = `../../${content.content}`;
   const [imageLoading, setImageLoading] = useState(true);
 
   return (
