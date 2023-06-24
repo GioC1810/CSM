@@ -194,7 +194,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             handleContentDelete={handleContentDelete}
           />
           <Button style={{ background: "#0071c5" }} type="submit">
-            Add page
+            {page?.id ? "Modify page" : "Add page"}
           </Button>
         </Form>
       </Row>
