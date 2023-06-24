@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import EditContentComponent from "./EditContentComponent";
-import ChangeBlockComponent from "./ChangeBlockComponent";
 import API from "../API";
 
 const EditPageComponent = ({ setErrMsg, setOffice }) => {
@@ -29,9 +28,12 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   const [contentList, setContentList] = useState(
     page ? [...page.contents] : []
   );
-
   const [users, setUsers] = useState([]);
+  //content form attribute
   const [lastId, setLastId] = useState(0);
+  const [content, setContent] = useState("")
+  const [type, setType] = useState("header");
+  const [contentId, setContentId] = useState(-1);
 
   const handlePublicationDate = (e) => {
     const newPubDate = e.target.value ? dayjs(e.target.value) : "";
@@ -72,15 +74,15 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
   }, []);
 
   useEffect(() => {
-    if(location.pathname === "/back/new"){
+    if (location.pathname === "/back/new") {
       setShowContentForm(false);
-      setTitle('');
-      setAuthor(user.username)
-      setPublicationDate('');
+      setTitle("");
+      setAuthor(user.username);
+      setPublicationDate("");
       creationDate = dayjs().format("YYYY-MM-DD");
       setContentList([]);
     }
-  }, [location.pathname])
+  }, [location.pathname]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -173,26 +175,33 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
               onChange={handlePublicationDate}
             />
           </Form.Group>
-
-          {showContentForm && (
-            <EditContentComponent
-              contents={contentList}
-              setContentList={setContentList}
-              lastId={lastId}
-              setErrMsg={setErrMsg}
-            />
-          )}
           <Button
             style={{ background: "#0093AF" }}
-            onClick={() => setShowContentForm(!showContentForm)}
+            onClick={() => {
+              setShowContentForm(!showContentForm);
+              setContent("");
+              setType("header");
+              setContentId(-1);
+            }}
           >
             {showContentForm ? "Close" : "Add content"}
           </Button>
-          <ChangeBlockComponent
-            contentList={contentList}
+          <EditContentComponent
+            contents={contentList}
             setContentList={setContentList}
+            content={content}
+            setContent={setContent}
+            type={type}
+            setType={setType}
+            contentId={contentId}
+            setContentId={setContentId}
+            lastId={lastId}
+            setErrMsg={setErrMsg}
+            showContentForm={showContentForm}
+            setShowContentForm={setShowContentForm}
             handleContentDelete={handleContentDelete}
           />
+
           <Button style={{ background: "#0071c5" }} type="submit">
             {page?.id ? "Modify page" : "Add page"}
           </Button>

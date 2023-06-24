@@ -1,12 +1,15 @@
-import { Button, Row, Col, Form, Image } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import BlockComponent from "./BlockComponent";
 import { Droppable, Draggable, DragDropContext } from "@hello-pangea/dnd";
-import API from "../API";
 
 const ChangeBlockComponent = ({
   contentList,
   setContentList,
   handleContentDelete,
+  setContent,
+  setType,
+  setContentId,
+  setShowContentForm,
 }) => {
   const handleDragEnd = (results) => {
     const { source, destination, type } = results;
@@ -29,6 +32,13 @@ const ChangeBlockComponent = ({
       return el;
     });
     return setContentList(reorderedStores);
+  };
+
+  const handleContentModify = (c) => {
+    setShowContentForm(true);
+    setType(c.type);
+    setContent(c.content);
+    setContentId(c.id);
   };
 
   return (
@@ -56,6 +66,14 @@ const ChangeBlockComponent = ({
                             onClick={() => handleContentDelete(i)}
                           >
                             Remove content
+                          </Button>
+                        </Col>
+                        <Col>
+                          <Button
+                            variant="primary"
+                            onClick={() => handleContentModify(c)}
+                          >
+                            Modify content
                           </Button>
                         </Col>
                       </Row>
