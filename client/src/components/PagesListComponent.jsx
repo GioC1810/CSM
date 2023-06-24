@@ -39,6 +39,7 @@ const PagesListComponent = ({ setError, setOffice }) => {
                   logged={location.pathname === "/back/pages"}
                   setPages={setPages}
                   pages={pages}
+                  setErrMsg={setError}
                 />
               </ListGroup.Item>
             );

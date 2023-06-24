@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import BlockComponent from "./BlockComponent";
 import ConfirmDeleteComponent from "./ConfirmDeleteComponent";
 
-const PageComponent = ({ page, logged, setPages, pages }) => {
+const PageComponent = ({ page, logged, setPages, pages, setErrMsg }) => {
   const { user } = useAuth();
   const [showContent, setShowContent] = useState(false);
   const [deleteConfermation, setDeleteConfermation] = useState(false);
@@ -80,6 +80,7 @@ const PageComponent = ({ page, logged, setPages, pages }) => {
           setDeleteConfermation={setDeleteConfermation}
           pageId={page.id}
           pages={pages}
+          setErrMsg={setErrMsg}
         />
       )}
     </Container>

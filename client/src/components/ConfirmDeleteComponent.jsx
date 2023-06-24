@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
 
-const ConfirmDeleteComponent = ({ setPages, setDeleteConfermation, pageId, pages }) => {
+const ConfirmDeleteComponent = ({ setPages, setDeleteConfermation, pageId, pages, setErrMsg }) => {
 
   const navigate = useNavigate();
 
