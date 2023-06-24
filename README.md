@@ -359,7 +359,7 @@ representing the fron office
 ### Back office - pages list with normal user logged
 ![Screenshot](./img/BackOffice_normalUser.png)
 ### Back office - edit page
-![Screenshot](./img/EditPage_adminUser.png)
+![Screenshot](./img/EditPage.png)
 ### Back office - create page
 ![Screenshot](./img/CreateNewPage.png)
 ### Back office - change site name
