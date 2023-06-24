@@ -87,18 +87,6 @@ const isLogged = (req, res, next) => {
   }
 };
 
-function requireAdminRole() {
-  return (req, res, next) => {
-    if (req.isAuthenticated() && req.user.role === "admin") {
-      next();
-    } else {
-      res
-        .status(403)
-        .send({ error: "role admin is required to perform the request" });
-    }
-  };
-}
-
 app.get("/page/all", async (req, res) => {
   try {
     let pages = await db_API.getPages();
@@ -171,30 +159,6 @@ app.get("/users", (req, res) => {
     .catch((err) =>
       res.status(500).json({ error: "errror in retrieving the users" })
     );
-});
-
-app.get("/page/author", async (req, res) => {
-  if (req.query.user) {
-    try {
-      const pages = await db_API.getPagesByAuthor(req.query.user);
-      pages.sort((p1, p2) => {
-        if (p1.publicationDate && p2.publicationDate) {
-          return p1.publicationDate.diff(p2.publicationDate);
-        } else if (p1.publicationDate) {
-          return -1;
-        } else if (p2.publicationDate) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      res.status(200).json(pages);
-    } catch (err) {
-      res.status(500).json({ error: "an error occurred", content: err });
-    }
-  } else {
-    res.status(422).json({ error: "the user field is not present" });
-  }
 });
 
 app.post(
