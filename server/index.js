@@ -326,7 +326,6 @@ app.put(
 );
 
 app.delete("/page/:id", [check("id").isNumeric()], async (req, res) => {
-  console.log(req.user.username);
   const pages = await db_API.getPagesByAuthor(req.user.username);
   const pageToDelete =
     pages.length > 0

@@ -31,7 +31,6 @@ const getSiteName = async () => {
     const name = await getJson(fetch(SERVER_URL + "site-name"), {
       credentials: "include",
     });
-    console.log(name)
     return name;
   } catch (err) {
     return err;

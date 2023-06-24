@@ -145,7 +145,6 @@ exports.modifyWebSiteName = (name) => {
   return new Promise((resolve, reject) => {
     const sql = "UPDATE WEB_SITE_NAME SET name=? WHERE ID = 1";
     db.run(sql, [name], (err) => {
-      console.log(err)
       if (err) reject(err);
       resolve();
     });
@@ -252,9 +251,7 @@ exports.getPagesId = () => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT id FROM PAGES";
     db.all(sql, (err, rows) => {
-      console.log(err)
       if (err) reject(err);
-      console.log(rows)
       const idlist = rows.map((row) => row.id);
       resolve(idlist);
     });
