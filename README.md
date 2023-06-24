@@ -350,7 +350,25 @@ representing the fron office
 
 ## Example Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+### Login
+![Screenshot](./img/Login.png)
+### Front office
+![Screenshot](./img/FrontOffice.png)
+### Back office - pages list with admin user logged
+![Screenshot](./img/BackOffice_adminUser.png)
+### Back office - pages list with normal user logged
+![Screenshot](./img/BackOffice_normalUser.png)
+### Back office - edit page with admin user logged
+![Screenshot](./img/EditPage_adminUser.png)
+### Back office - edit page with normal user logged
+![Screenshot](./img/EditPage_normalUser.png)
+### Back office - create page
+![Screenshot](./img/CreatePage_adminUser.png)
+### Back office - change site name
+![Screenshot](./img/ChangeSiteName.png)
+### Logout
+![Screenshot](./img/Logout.png)
+
 
 ## Users Credentials
 ### User1
