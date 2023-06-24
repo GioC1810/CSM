@@ -372,10 +372,10 @@ representing the fron office
 
 ## Users Credentials
 ### User1
-- user1@gmail.com, pdfg456ty2, role: admin, nickname: user1
+- username: user1@gmail.com, password: pdfg456ty2, role: admin, nickname: user1
 ### User2
-- user2@gmail.com, qd13e23dx, role: user, nickname: user2
+- username: user2@gmail.com, password:  qd13e23dx, role: user, nickname: user2
 ### User3
-- user3@gmail.com, 3jkn4tui3h53992, role: user, nickname: user3 
+- username: user3@gmail.com, password: 3jkn4tui3h53992, role: user, nickname: user3 
 ### User4
-- user4@gmail.com, jbru4734f3u, role: admin, nickname: user4
+- username: user4@gmail.com, password: jbru4734f3u, role: admin, nickname: user4
