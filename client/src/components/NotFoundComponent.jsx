@@ -8,7 +8,7 @@ const NotFoundComponent = () => {
   const { user } = useAuth();
 
   return (
-    <Container fluid>
+    <Container className="justify-content-center mt-4">
       <h3>Not found section, please navigate to a valid route</h3>
       <Row>
         <Col>
@@ -22,7 +22,7 @@ const NotFoundComponent = () => {
               Go to back office
             </Button>
           ) : (
-            <Button variant="dark" onClick={() => navigate("/login")}>
+            <Button variant="primary" style={{background: "#2D68C4"}} onClick={() => navigate("/login")}>
               Go to login
             </Button>
           )}

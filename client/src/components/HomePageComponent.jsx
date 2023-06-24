@@ -13,7 +13,7 @@ const HomePageComponent = () => {
         <p>Select one of the following options</p>
       <Row>
         <Col>
-          <Button variant="primary" onClick={() => navigate("/front")}>
+          <Button variant="info" style={{background: "#0066b2", textDecoration: "none", color:"white"}} onClick={() => navigate("/front")}>
             Go to front office
           </Button>
         </Col>

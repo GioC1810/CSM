@@ -49,7 +49,7 @@ const NavigationBar = (props) => {
   };
 
   return (
-    <Navbar style={{background: "#002D62"}} variant="dark">
+    <Navbar style={{background: "#034694"}} variant="dark">
       <Container>
         <BsDisplay style={{ color: "white" }} size={30} />
         <div
@@ -59,7 +59,7 @@ const NavigationBar = (props) => {
             alignItems: "center",
           }}
         >
-          <Navbar.Brand style={{ color: "grey" }}>
+          <Navbar.Brand style={{ color: "#E1EBEE" }}>
             {loading ? "..." : siteName}
             {user?.role === "admin" && (
               <BsFillPencilFill
@@ -69,7 +69,7 @@ const NavigationBar = (props) => {
               />
             )}
           </Navbar.Brand>
-          <Navbar.Brand style={{ color: "red" }}>
+          <Navbar.Brand style={{ color: "#AFDBF5" }}>
             {user ? (props.office ? props.office : "") : "front-office"}
           </Navbar.Brand>
         </div>

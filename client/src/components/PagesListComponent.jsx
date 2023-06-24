@@ -28,7 +28,7 @@ const PagesListComponent = ({ setError, setOffice }) => {
   }, [location]);
 
   return (
-    <Container className="mt-2 border-2 rounded">
+    <Container className="mt-4 border-2 rounded">
       <ListGroup>
         {pages &&
           pages.map((page) => {

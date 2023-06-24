@@ -24,9 +24,9 @@ const LoginComponent = (props) => {
 
   return (
     <Container >
-      <Row className="justify-content-center mt-2">
+      <Row className="justify-content-center mt-4">
         <Col xs={20} sm={14} md={10} >
-          <div className="border border-2 rounded p-4" style={{background: "#F0F8FF"}}>
+          <div className="border border-2 rounded p-4" style={{background: "#E1EBEE"}}>
             <h2 className="text-center">Login</h2>
             <h4 className="text-center">Login is necessary to access back office</h4>
             <Form className="mt-3" onSubmit={handleLogin}>
@@ -55,8 +55,8 @@ const LoginComponent = (props) => {
               </Form.Group>
               <Container fluid>
                 <Row>
-                  <Col>
-                    <Button variant="primary" type="submit">
+                  <Col className="d-flex justify-content-center">
+                    <Button variant="primary" style={{background: "#2D68C4"}} type="submit">
                       Login
                     </Button>
                   </Col>

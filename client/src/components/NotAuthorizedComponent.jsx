@@ -11,8 +11,8 @@ const NotAuthorizedComponent = () => {
           : "You do not have access to the back office without have login"}
       </h4>
 
-      <Button variant="dark" size="md">
-        <Link to="/login" style={{ textDecoration: "none" }}>
+      <Button variant="primary" style={{background: "#2D68C4"}} size="md">
+        <Link to="/login" style={{ textDecoration: "none", color: "white" }}>
           Login
         </Link>
       </Button>

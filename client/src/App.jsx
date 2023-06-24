@@ -88,7 +88,7 @@ function App() {
          <Route
           path="/back/new"
           element={
-            user ? (
+            user?.username ? (
               <EditPageComponent setErrMsg={setErrMsg} setOffice={setOffice} />
             ) : (
               <NotAuthorizedComponent />
@@ -98,7 +98,7 @@ function App() {
         <Route
           path="/back/edit/:id"
           element={
-            user ? (
+            user?.username ? (
               <EditPageComponent setErrMsg={setErrMsg} setOffice={setOffice} />
             ) : (
               <NotAuthorizedComponent />
