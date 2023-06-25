@@ -13,6 +13,7 @@ const getJson = (httpResponse) => {
           response
             .json()
             .then((json) => {
+              console.log(json)
                 reject(json)
             })
             .catch((err) => {

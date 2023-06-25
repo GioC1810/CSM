@@ -83,6 +83,21 @@ exports.getPages = () => {
   });
 };
 
+exports.getPagesTitle = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT title FROM PAGES ";
+    db.all(sql, [], (err, rows) => {
+      if (err) reject(err);
+      if (rows.length === 0) {
+        resolve({ error: "pages not present" });
+      } else {
+        const pagesTitles = rows.map((page) => page.title);
+        resolve(pagesTitles);
+      }
+    });
+  });
+};
+
 exports.getPagesByAuthor = (id) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM PAGES WHERE AUTHOR = ?";
@@ -262,8 +277,8 @@ exports.getImages = () => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT image FROM IMAGES";
     db.all(sql, (err, rows) => {
-      if(err) reject(err);
-      resolve(rows.map(row => row.image));
-    })
-  })
-}
+      if (err) reject(err);
+      resolve(rows.map((row) => row.image));
+    });
+  });
+};

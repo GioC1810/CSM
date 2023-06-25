@@ -14,7 +14,6 @@ const db_API = require("./db-api");
 const { check, validationResult } = require("express-validator");
 
 const contentsType = ["header", "image", "paragraph"];
-const images = ["canoa.jpg", "mare.jpg", "paesaggio.jpg", "piramide.jpg"];
 
 const app = express();
 
@@ -144,13 +143,13 @@ app.put(
     } else {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(422).json({error: "title length too long"});
+        return res.status(400).json({error: "title length too long"});
       }
       try {
         await db_API.modifyWebSiteName(req.body.siteName);
         res.status(200).json({ message: "site name change correctly" });
       } catch (err) {
-        res.status(400).json({ error: "db error" });
+        res.status(500).json({ error: "db error" });
       }
     }
   }
@@ -183,21 +182,25 @@ app.post(
     } else {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(422).json(errors);
+        return res.status(400).json(errors);
       }
       //check sulle date
       const creationDate = req.body.creationDate;
       if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the creation date is in a wrong format" });
       }
       const publicationDate = req.body.publicationDate;
 
       if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the publication date is in a wrong format" });
+      }
+      const pagesTitle = await db_API.getPagesTitle();
+      if(pagesTitle.includes(req.body.title)){
+        return res.status(400).json({error: "a page with this title already exist!"})
       }
       //check sulla validità dei contenuti
       //si verifica che il tipo sia o header, o image o paragraph
@@ -205,6 +208,7 @@ app.post(
       //e che l'header sia presente
       let contentTypeIsValid = true;
       let headerPresent = false;
+      const images = await db_API.getImages();
 
       req.body.contents.forEach((block) => {
         if (
@@ -221,7 +225,7 @@ app.post(
 
       if (!contentTypeIsValid || !headerPresent) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the type of the content is not valid" });
       }
 
@@ -275,19 +279,24 @@ app.put(
       const creationDate = req.body.creationDate;
       if (!dayjs(creationDate, "dd/MM/YYYY").isValid()) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the creation date is in a wrong format" });
       }
       const publicationDate = req.body.publicationDate;
 
       if (publicationDate && !dayjs(publicationDate, "dd/MM/YYYY").isValid()) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the publication date is in a wrong format" });
+      }
+      const pagesTitle = await db_API.getPagesTitle();
+      if(pagesTitle.includes(req.body.title)){
+        return res.status(400).json({error: "a page with this title already exist!"})
       }
 
       let contentTypeIsValid = true;
       let headerPresent = false;
+      const images = await db_API.getImages();
 
       req.body.contents.forEach((block) => {
         if (
@@ -304,7 +313,7 @@ app.put(
 
       if (!contentTypeIsValid || !headerPresent) {
         return res
-          .status(422)
+          .status(400)
           .json({ error: "the type of the content is not valid" });
       }
 
@@ -347,7 +356,7 @@ app.delete("/page/:id", [check("id").isNumeric()], async (req, res) => {
   } else {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json(errors);
+      return res.status(400).json(errors);
     }
     try {
       const listId = await db_API.getPagesId();
