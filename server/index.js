@@ -127,10 +127,11 @@ app.get("/site-name", (req, res) => {
 });
 
 app.get("/images", (req, res) => {
-  db_API.getImages()
-  .then((images) => res.status(200).json(images))
-  .catch((err) => res.status(500).json({error: "Cannot retrieve images"}))
-})
+  db_API
+    .getImages()
+    .then((images) => res.status(200).json(images))
+    .catch((err) => res.status(500).json({ error: "Cannot retrieve images" }));
+});
 
 app.use(isLogged);
 
@@ -139,11 +140,13 @@ app.put(
   [check("siteName").isLength({ min: 1, max: 50 })],
   async (req, res) => {
     if (req.user.role !== "admin") {
-      res.status(400).json({error: "user not authorized to perform this action"})
+      res
+        .status(400)
+        .json({ error: "user not authorized to perform this action" });
     } else {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({error: "title length too long"});
+        return res.status(400).json({ error: "title length too long" });
       }
       try {
         await db_API.modifyWebSiteName(req.body.siteName);
@@ -199,8 +202,10 @@ app.post(
           .json({ error: "the publication date is in a wrong format" });
       }
       const pagesTitle = await db_API.getPagesTitle();
-      if(pagesTitle.includes(req.body.title)){
-        return res.status(400).json({error: "a page with this title already exist!"})
+      if (pagesTitle.some(p => p.title === req.body.title)) {
+        return res
+          .status(400)
+          .json({ error: "a page with this title already exist!" });
       }
       //check sulla validità dei contenuti
       //si verifica che il tipo sia o header, o image o paragraph
@@ -289,9 +294,13 @@ app.put(
           .status(400)
           .json({ error: "the publication date is in a wrong format" });
       }
-      const pagesTitle = await db_API.getPagesTitle();
-      if(pagesTitle.includes(req.body.title)){
-        return res.status(400).json({error: "a page with this title already exist!"})
+      const pagesTitle = await db_API.getPagesTitle()
+      const pagesWithoutPreviusPage = pagesTitle.filter(p => p.id !== req.body.id)
+
+      if (pagesWithoutPreviusPage.some(p => p.title === req.body.title)) {
+        return res
+          .status(400)
+          .json({ error: "a page with this title already exist!" });
       }
 
       let contentTypeIsValid = true;

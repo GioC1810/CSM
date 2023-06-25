@@ -85,13 +85,15 @@ exports.getPages = () => {
 
 exports.getPagesTitle = () => {
   return new Promise((resolve, reject) => {
-    const sql = "SELECT title FROM PAGES ";
+    const sql = "SELECT title, id FROM PAGES ";
     db.all(sql, [], (err, rows) => {
       if (err) reject(err);
       if (rows.length === 0) {
         resolve({ error: "pages not present" });
       } else {
-        const pagesTitles = rows.map((page) => page.title);
+        const pagesTitles = rows.map((page) => {
+          return { title: page.title, id: page.id };
+        });
         resolve(pagesTitles);
       }
     });
