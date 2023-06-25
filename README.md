@@ -327,6 +327,7 @@
   - in the case of an image type, the content contains the name of the image like "mare.jpg"
 - Table `WEB_SITE_NAME` - contains the fields: id, name
   - the table has only one row for memorize the name of the website
+- Table `IMAGES` - contains the names of the images
 
 # Client side
 
