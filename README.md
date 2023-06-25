@@ -298,6 +298,25 @@
     "error" : "Cannot connect to db"
   }
   ```
+- GET `/images` (api to retrieve the images name)
+  - content-type: application.json
+  - request parameters: none
+  - request body: none
+  - response body content for correct request:
+  ```json
+   [
+    "piramide.jpg",
+    "mare.jpg",
+    "paesaggio.jpg",
+    "canoa.jpg"
+   ]
+  ```
+  -for db error
+  ```json
+  {
+    "error" : "Cannot retrieve images"
+  }
+  ```
 ## Database Tables
 
 - Table `USERS` - contains the fields: id, username, password (encrypted), salt, nickname, role
