@@ -15,7 +15,8 @@ const EditContentComponent = ({
   lastId,
   showContentForm,
   setShowContentForm,
-  handleContentDelete
+  handleContentDelete,
+  images
 }) => {
   const blockTypes = ["header", "image", "paragraph"];
 
@@ -62,7 +63,7 @@ const EditContentComponent = ({
             })}
           </Form.Select>
           {type === "image" ? (
-            <ImageSelectorComponent setContent={setContent} />
+            <ImageSelectorComponent setContent={setContent} images={images}/>
           ) : (
             <>
               <Form.Label>Content</Form.Label>
@@ -91,6 +92,7 @@ const EditContentComponent = ({
         setContentId={setContentId}
         handleContentDelete={handleContentDelete}
         setShowContentForm={setShowContentForm}
+        images={images}
       />
     </Container>
   );

@@ -176,5 +176,21 @@ const changeSiteName = async (name) => {
   }
 }
 
-const API = { getSiteName, logIn, checkSession, logout, getAllPages, getUsers, addPage, deletePage, modifyPage, changeSiteName };
+const getImages = async () =>{
+  try{
+    const images = await getJson(
+      fetch(SERVER_URL + "images", {
+        headers:{
+          "Content-Type": "application/json",
+        },
+        mode: "cors"
+      })
+    );
+    return images;
+  } catch(err){
+    return err;
+  }
+}
+
+const API = { getSiteName, logIn, checkSession, logout, getAllPages, getUsers, addPage, deletePage, modifyPage, changeSiteName, getImages };
 export default API;

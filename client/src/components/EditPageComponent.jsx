@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import EditContentComponent from "./EditContentComponent";
 import API from "../API";
 
-const EditPageComponent = ({ setErrMsg, setOffice }) => {
+const EditPageComponent = ({ setErrMsg, setOffice, images }) => {
   const location = useLocation();
   const navigate = useNavigate();
   let page = location.state;
@@ -200,6 +200,7 @@ const EditPageComponent = ({ setErrMsg, setOffice }) => {
             showContentForm={showContentForm}
             setShowContentForm={setShowContentForm}
             handleContentDelete={handleContentDelete}
+            images={images}
           />
 
           <Button style={{ background: "#0071c5" }} type="submit">

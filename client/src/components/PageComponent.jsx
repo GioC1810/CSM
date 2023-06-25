@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import BlockComponent from "./BlockComponent";
 import ConfirmDeleteComponent from "./ConfirmDeleteComponent";
 
-const PageComponent = ({ page, logged, setPages, pages, setErrMsg }) => {
+const PageComponent = ({ page, logged, setPages, pages, setErrMsg, images }) => {
   const { user } = useAuth();
   const [showContent, setShowContent] = useState(false);
   const [deleteConfermation, setDeleteConfermation] = useState(false);
@@ -31,7 +31,7 @@ const PageComponent = ({ page, logged, setPages, pages, setErrMsg }) => {
             page.contents
               .sort((b1, b2) => b1.position - b2.position)
               .map((block) => (
-                <BlockComponent content={block} key={block.id} />
+                <BlockComponent content={block} key={block.id} images={images}/>
               ))}
           <Container className="d-flex justify-content-center mb-2">
             {showContent ? (

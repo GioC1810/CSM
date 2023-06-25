@@ -1,11 +1,8 @@
-import { Container, Button, Row, Col, Form, Image } from "react-bootstrap";
+import { Container, Row, Col, Form, Image } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import dayjs from "dayjs";
-import { useLocation, Link } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 import API from "../API";
 
-const ImageSelectorComponent = ({ setContent }) => {
+const ImageSelectorComponent = ({ setContent, images }) => {
   const imageStyle = {
     cursor: "pointer",
     padding: "5px",
@@ -16,24 +13,23 @@ const ImageSelectorComponent = ({ setContent }) => {
     alignItems: "center",
   };
 
-  const [images, setImages] = useState([
-    { name: "canoa.jpg", selected: false },
-    { name: "mare.jpg", selected: false },
-    { name: "paesaggio.jpg", selected: false },
-    { name: "piramide.jpg", selected: false }
-  ]);
+  const [imagesList, setImagesList] = useState(
+    images.map((i) => {
+      return { name: i, selected: false };
+    })
+  );
 
   const handleClick = (img) => {
-    const new_selection = images.map(i => {
-        if(i.name === img.name){
-            i.selected = true;
-        }
-        if(i.name !== img.name && i.selected === true){
-            i.selected = false;
-        }
-        return i;
+    const new_selection = imagesList.map((i) => {
+      if (i.name === img.name) {
+        i.selected = true;
+      }
+      if (i.name !== img.name && i.selected === true) {
+        i.selected = false;
+      }
+      return i;
     });
-    setImages(new_selection);
+    setImagesList(new_selection);
     setContent(img.name);
   };
 
@@ -41,7 +37,7 @@ const ImageSelectorComponent = ({ setContent }) => {
     <Container className="mt-3">
       <Form.Label>Content</Form.Label>
       <Row>
-        {images.map((image) => (
+        {imagesList.map((image) => (
           <Col
             key={image.name}
             onClick={() => handleClick(image)}

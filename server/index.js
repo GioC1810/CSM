@@ -127,6 +127,12 @@ app.get("/site-name", (req, res) => {
     .catch((err) => res.status(500).json({ error: "Cannot connect to db" }));
 });
 
+app.get("/images", (req, res) => {
+  db_API.getImages()
+  .then((images) => res.status(200).json(images))
+  .catch((err) => res.status(500).json({error: "Cannot retrieve images"}))
+})
+
 app.use(isLogged);
 
 app.put(

@@ -2,8 +2,8 @@ import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import "dayjs";
 
-const BlockComponent = ({ content }) => {
-  const images = ["canoa.jpg", "mare.jpg", "paesaggio.jpg", "piramide.jpg"];
+const BlockComponent = ({ content, images }) => {
+
   const path_to_image = `../../${content.content}`;
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -29,7 +29,9 @@ const BlockComponent = ({ content }) => {
             </Card>
           ) : content.type === "header" ? (
             <h3>{content.content}</h3>
-          ) : <p>{content.content}</p>}
+          ) : (
+            <p>{content.content}</p>
+          )}
         </Col>
       </Row>
     </Container>

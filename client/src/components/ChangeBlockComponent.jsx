@@ -10,6 +10,7 @@ const ChangeBlockComponent = ({
   setType,
   setContentId,
   setShowContentForm,
+  images
 }) => {
   const handleDragEnd = (results) => {
     const { source, destination, type } = results;
@@ -58,7 +59,7 @@ const ChangeBlockComponent = ({
                     >
                       <Row className="mt-3">
                         <Col>
-                          <BlockComponent content={c} />
+                          <BlockComponent content={c} images={images}/>
                         </Col>
                         <Col>
                           <Button

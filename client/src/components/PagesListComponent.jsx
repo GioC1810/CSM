@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import { useLocation } from "react-router-dom";
 import PageComponent from "./PageComponent";
 
-const PagesListComponent = ({ setError, setOffice }) => {
+const PagesListComponent = ({ setError, setOffice, images }) => {
   const { user } = useAuth();
   const location = useLocation();
   const [pages, setPages] = useState([]);
@@ -40,6 +40,7 @@ const PagesListComponent = ({ setError, setOffice }) => {
                   setPages={setPages}
                   pages={pages}
                   setErrMsg={setError}
+                  images={images}
                 />
               </ListGroup.Item>
             );

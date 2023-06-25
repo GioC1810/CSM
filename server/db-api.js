@@ -257,3 +257,13 @@ exports.getPagesId = () => {
     });
   });
 };
+
+exports.getImages = () => {
+  return new Promise((resolve, reject) => {
+    const sql = "SELECT image FROM IMAGES";
+    db.all(sql, (err, rows) => {
+      if(err) reject(err);
+      resolve(rows.map(row => row.image));
+    })
+  })
+}
