@@ -1,5 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/_XpznRuT)
 # Exam #1: "CMSmall"
+The project was assigned for the web application 1 course at Polytechnic of Turin and consist in a small content management web application developed in React
 
 ## Student: s309685 Cacopardi Giorgio 
 
